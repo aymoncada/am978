@@ -1,0 +1,580 @@
+                
+<!DOCTYPE html>
+<html lang="en">
+      <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#" itemscope itemtype="http://schema.org/WebPage">      <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+          <title>MAMP &amp; MAMP PRO - your local web development solution for PHP and WordPress development</title>
+              <meta name="description" content="MAMP GmbH is the manufacturer of the award-winning MAMP software." />
+              <meta name="keywords" content="MAMP, local web server, php, Apache, WordPress, development environment, time recording, ear training, radio app" />
+    		<meta name="author" content="MAMP GmbH">
+    <meta name="publisher" content="MAMP GmbH">
+    <meta name="robots" content="index,follow">
+
+    <meta itemprop="applicationCategory" content="DeveloperApplication,UtilitiesApplication,BusinessApplication">
+    <meta itemprop="operatingSystem" content="Mac,Windows,iOS,Android,FireTV">
+
+    <!-- http://ogp.me/ -->
+          <meta property="og:locale" content="en_GB">
+                        <meta property="og:locale:alternate" content="de_DE">
+                  <meta property="og:locale:alternate" content="ru_RU">
+              
+              <meta property="og:site_name" content="MAMP &amp; MAMP PRO - Your local web development solution">
+            <meta property="og:title" content="MAMP &amp; MAMP PRO - your local web development solution for PHP and WordPress development">
+      <meta itemprop="name" content="MAMP &amp; MAMP PRO - your local web development solution for PHP and WordPress development">
+              <meta property="og:description" content="MAMP GmbH is the manufacturer of the award-winning MAMP software.">
+        <meta itemprop="description" content="MAMP GmbH is the manufacturer of the award-winning MAMP software.">
+                    <meta name="twitter:card" content="summary">
+                    <meta name="twitter:site" content="@mamp_en">
+            <meta name="twitter:url" content="https://www.mamp.info/en/">
+      <meta name="twitter:title" content="MAMP &amp; MAMP PRO - your local web development solution for PHP and WordPress development">
+              <meta name="twitter:description" content="MAMP GmbH is the manufacturer of the award-winning MAMP software.">
+      
+                        <meta property="twitter:image" content="https://www.mamp.info/images/icons/mamp-pro.png">
+          <meta property="twitter:image:alt" content="MAMP PRO Icon">
+          <meta property="og:image" content="https://www.mamp.info/images/icons/mamp-pro.png">
+              
+      <meta property="og:type" content="website">
+      <meta property="og:url" content="https://www.mamp.info/en/">
+    
+    <link rel="alternate" hreflang="en" href="https://www.mamp.info/en/">
+    <link rel="canonical" href="https://www.mamp.info/en/">
+
+          <link rel="alternate" type="application/atom+xml" title="Release notes - Mac" href="/en/release-notes/mac/feed.xml">
+      <link rel="alternate" type="application/atom+xml" title="Release notes - Windows" href="/en/release-notes/windows/feed.xml">
+    
+    <link rel="icon" type="img/ico" href="/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.png">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icons/57x57.png">
+    <link rel="apple-touch-icon" sizes="57x57" href="/images/apple-touch-icons/57x57.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/images/apple-touch-icons/72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/images/apple-touch-icons/76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/images/apple-touch-icons/114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/images/apple-touch-icons/120x120.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/images/apple-touch-icons/152x152.png">
+              <link href="/css/bootstrap.min.css" type="text/css" rel="stylesheet">
+      <link href="/css/fonts.css" type="text/css" rel="stylesheet">
+      <link href="/css/custom.css?t=1582028729" type="text/css" rel="stylesheet">
+                  <script src="/js/ovrly.js"></script>
+      <script src="/js/jquery.min.js"></script>
+      <script src="/js/popper.min.js"></script>
+      <script src="/js/bootstrap.min.js"></script>
+      <script defer src="/js/fontawesome.js"></script>
+      <script>
+        window.FontAwesomeConfig = {
+          searchPseudoElements: true
+        }
+      </script>
+      <script>
+        const app_name = '';
+        const app_path = '';
+                  const template = 'start';
+              </script>
+      <script defer src="/js/custom.js?t=1582028729"></script>
+      </head>
+      <body itemscope itemtype="http://schema.org/WebPage">      <header>
+              <div class="fixed-top bg-app-specific">
+  <div class="container-fluid">
+    <div class="row no-gutters">
+      <div class="col-0 col-lg-1 d-none d-lg-block">
+        <nav class="navbar navbar-expand-lg navbar-dark pl-0" itemscope itemtype="http://schema.org/SiteNavigationElement">
+          <a class="navbar-brand" href="/en/">
+            <img src="/images/icons/mamp-gmbh.png" width="30" height="30" class="d-inline-block align-top" alt="MAMP GmbH">
+            <span class="sr-only">MAMP GmbH</span>
+          </a>
+        </nav>
+      </div>
+      <div class="col-12 col-lg-10">
+        <div class="container pl-0 pr-0">
+          <nav class="navbar navbar-expand-lg navbar-dark" itemscope itemtype="http://schema.org/SiteNavigationElement">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+              <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a itemprop="url" class="nav-link" href="/en/mamp-pro/"><span itemprop="name">MAMP PRO</span></a></li>
+                <li class="nav-item"><a itemprop="url" class="nav-link" href="/en/mamp/"><span itemprop="name">MAMP</span></a></li>
+                <li class="nav-item"><a itemprop="url" class="nav-link" href="/namo/en/"><span itemprop="name">NAMO</span></a></li>
+                                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbar-dropdown-products" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More products</a>
+                  <div class="dropdown-menu rounded-0 border-0" aria-labelledby="navbar-dropdown-products">
+                    <a class="dropdown-item text-white" href="/timeedition/en/" style="background-image: url('/timeedition/images/logo.svg');">timeEdition</a>
+                    <a class="dropdown-item text-white" href="/better-ears/en/" style="background-image: url('/better-ears/images/logo.svg');">Better Ears</a>
+                    <a class="dropdown-item text-white" href="/receiver/en/" style="background-image: url('/receiver/images/logo.svg');">Receiver</a>
+                    <a class="dropdown-item text-white" href="/b-flat/en/" style="background-image: url('/b-flat/images/logo.svg');">B Flat</a>
+                  </div>
+                </li>
+                <li class="nav-item d-lg-none"><a itemprop="url" class="nav-link" href="/en/support/"><span itemprop="name">Support</span></a></li>
+                                  <li class="nav-item d-lg-none"><a itemprop="url" class="nav-link" href="/en/downloads/"><i class="fas fa-download mr-1"></i> <span itemprop="name">Downloads</span></a></li>
+                  <li class="nav-item d-lg-none"><a itemprop="url" class="nav-link" role="button" href="/en/store/"><i class="fas fa-shopping-cart mr-1"></i> <span itemprop="name">Buy</span></a></li>
+                              </ul>
+              <ul class="navbar-nav d-none d-lg-flex">
+                <li class="nav-item"><a itemprop="url" class="nav-link" href="/en/jobs/"><span itemprop="name">Jobs</span></a></li>
+                                  <li class="nav-item"><a itemprop="url" class="nav-link" href="/en/downloads/"><span itemprop="name">Downloads</span></a></li>
+                                <li class="nav-item"><a itemprop="url" class="nav-link" href="/en/support/"><span itemprop="name">Support</span></a></li>
+              </ul>
+            </div>
+          </nav>
+        </div>
+      </div>
+      <div class="col-0 col-lg-1 d-none d-lg-block"></div>
+    </div>
+  </div>
+</div>          </header>
+    <main class="pb-5" itemscope itemprop="mainContentOfPage">
+              <div id="cover" class="position-relative mb_-5">
+    <img src="/images/header/start/header-small.jpg" class="img-fluid d-sm-none" alt="">
+    <img src="/images/header/start/header-medium.jpg" class="img-fluid d-none d-sm-flex d-md-none" alt="">
+    <img src="/images/header/start/header-large.jpg" class="img-fluid d-none d-md-flex d-lg-none" alt="">
+    <img src="/images/header/start/header-extra-large.jpg" class="img-fluid d-none d-lg-flex d-widescreen-none" alt="">
+          <img src="/images/header/start/header-widescreen.jpg" class="img-fluid d-none d-widescreen-flex" alt="">
+        <div class="position-absolute cover-text w-100">
+      <div class="text-center pl-3 pr-3 ml-3 mr-3">
+                                                                                      <img src="/images/header/start/text-mamp-and-mamp-pro.svg" class="img-fluid" alt="MAMP &amp; MAMP PRO">
+
+                                            </div>
+    </div>
+    <div class="position-absolute cover-apps w-100">
+      <div class="container">
+        <div class="text-center d-md-block">
+                                <a class="btn btn-light ml-1 mr-1 mb-3" href="/en/downloads/" role="button"><i class="fas fa-download mr-1"></i> Free Download</a>
+            <br class="d-block">
+            <a class="btn btn-light ml-1 mr-1" href="/en/downloads/" role="button"><i class="fas fa-download mr-1"></i> Try Now</a>
+            <a class="btn btn-light ml-1 mr-1" href="/macstore" role="button"><i class="fas fa-shopping-cart mr-1"></i> Buy Now</a>
+                    
+                              
+                              
+                              
+                              
+                              
+                              
+        </div>
+      </div>
+    </div>
+  </div>
+    
+                                                            
+  <div class="mt-5 mb-5">                
+            <div class="container">
+      <div class="pt-3">
+        
+                      <div class="row">
+                            <div class="col-12 col-lg-6 order-lg-first">
+                <img
+                  srcset="/__we_thumbs__/1594_7_mamp-on-imac-spiegel.png 330w,
+                          /__we_thumbs__/1594_3_mamp-on-imac-spiegel.png 370w,
+                          /__we_thumbs__/1594_8_mamp-on-imac-spiegel.png 450w,
+                          /__we_thumbs__/1594_9_mamp-on-imac-spiegel.png 540w,
+                          /images/mamp-on-imac-spiegel.png 770w"
+                  sizes="(max-width: 320px) 330px,
+                         (max-width: 375px) 330px,
+                         (max-width: 414px) 450px,
+                         (max-width: 575px) 570px,
+                         (max-width: 768px) 770px,
+                         (max-width: 992px) 720px,
+                         570px"
+                  src="/images/mamp-on-imac-spiegel.png"
+                  class="img-fluid mx-auto d-block mb-4 mb-lg-0"
+                  alt="MAMP - local webserver">
+              </div>
+              <div class="col-12 col-lg-6 pl-lg-5 line-text order-lg-last position-relative">
+                <div class="line-text-outer">
+                  <div class="line-text-inner">
+                    <h3><strong>MAMP</strong></h3>
+<p>MAMP is a free, local server environment that can be installed under macOS and Windows with just a few clicks. MAMP provides them with all the tools they need to run <strong>WordPress</strong> on their desktop PC for testing or development purposes, for example. With the help of our <a href="/namo/en/?m=1580890090&">local DNS server NAMO</a>, you can even easily test your projects on mobile devices.&nbsp;It doesn't matter if you prefer <strong>Apache</strong> or <strong>Nginx</strong> or if you want to work with <strong>PHP</strong>, Python, Perl or Ruby.</p>
+<p class="right-arrow"><a href="/en/downloads/?m=1581611990&">Free MAMP download</a></p>                  </div>
+                </div>
+              </div>
+            </div>
+                        </div>
+    </div>
+                          
+    <div class="mt-5">    <div class="bg-light pt-4 pb-4">    <div class="container">
+      <div class="pt-3">
+        
+                      <div class="row">
+                            <div class="col-12 col-lg-6 order-lg-last">
+                <img
+                  srcset="/__we_thumbs__/1284_7_MAMP-PRO-MacBook-Pro.png 330w,
+                          /__we_thumbs__/1284_3_MAMP-PRO-MacBook-Pro.png 370w,
+                          /__we_thumbs__/1284_8_MAMP-PRO-MacBook-Pro.png 450w,
+                          /__we_thumbs__/1284_9_MAMP-PRO-MacBook-Pro.png 540w,
+                          /__we_thumbs__/1284_4_MAMP-PRO-MacBook-Pro.png 770w"
+                  sizes="(max-width: 320px) 330px,
+                         (max-width: 375px) 330px,
+                         (max-width: 414px) 450px,
+                         (max-width: 575px) 570px,
+                         (max-width: 768px) 770px,
+                         (max-width: 992px) 720px,
+                         570px"
+                  src="/__we_thumbs__/1284_4_MAMP-PRO-MacBook-Pro.png"
+                  class="img-fluid mx-auto d-block mb-4 mb-lg-0"
+                  alt="MAMP PRO for macOS and Windows">
+              </div>
+              <div class="col-12 col-lg-6 pr-lg-5 line-text order-lg-first position-relative">
+                <div class="line-text-outer">
+                  <div class="line-text-inner">
+                    <h3><strong>MAMP PRO</strong></h3>
+<p>MAMP PRO is the commercial, <strong>professional frontend</strong> for the classic local server environment: MAMP. With MAMP PRO you can create a separate host for each of your web projects. Install <strong>WordPress</strong> with only one click and after completion of your page, publish it directly from MAMP PRO on your live server. This is just a small part of what you can do with MAMP PRO.</p>
+<p class="right-arrow"><a href="/en/mamp-pro/?m=1581415841&">Learn more about MAMP PRO</a></p>                  </div>
+                </div>
+              </div>
+            </div>
+                        </div>
+    </div>
+    </div>    </div>                  
+    <div class="mt-5">        <div class="container">
+      <div class="pt-3">
+        
+                      <div class="text-center line-text">
+              <h3 class="text-uppercase"><strong>More Apps created by us</strong></h3>            </div>
+                                    </div>
+    </div>
+        </div>                  
+    <div class="mt-0">        <div class="container">
+      <div class="pt-0">
+        
+                      <div class="row">
+                            <div class="col-12 col-lg-6 order-lg-first">
+                <img
+                  srcset="/__we_thumbs__/1786_7_namo-logo-complete.png 330w,
+                          /__we_thumbs__/1786_3_namo-logo-complete.png 370w,
+                          /__we_thumbs__/1786_8_namo-logo-complete.png 450w,
+                          /__we_thumbs__/1786_9_namo-logo-complete.png 540w,
+                          /namo/images/namo-logo-complete.png 770w"
+                  sizes="(max-width: 320px) 330px,
+                         (max-width: 375px) 330px,
+                         (max-width: 414px) 450px,
+                         (max-width: 575px) 570px,
+                         (max-width: 768px) 770px,
+                         (max-width: 992px) 720px,
+                         570px"
+                  src="/namo/images/namo-logo-complete.png"
+                  class="img-fluid mx-auto d-block mb-4 mb-lg-0"
+                  alt="NAMO LOGO">
+              </div>
+              <div class="col-12 col-lg-6 pl-lg-5 line-text order-lg-last position-relative">
+                <div class="line-text-outer">
+                  <div class="line-text-inner">
+                    <h3><strong>NAMO</strong></h3>
+<p>Namo is a DNS server for macOS. Even without being a network professional, NAMO can greatly simplify the testing of your web projects in the LAN. Instead of entering cumbersome (changing) IP addresses in your browsers, you can use "normal" domain names. This is especially useful when testing on multiple mobile devices. Accessing services in your internal company network, such as wikis, image databases, CRMs, etc., is also child's play with NAMO.</p>
+<p class="right-arrow"><a href="/namo/en/?m=1580890090&">Learn more</a></p>                  </div>
+                </div>
+              </div>
+            </div>
+                        </div>
+    </div>
+        </div>                  
+    <div class="mt-5">    <div class="bg-light pt-4 pb-4">    <div class="container">
+      <div class="pt-3">
+        
+                      <div class="row">
+                            <div class="col-12 col-lg-6 order-lg-last">
+                <img
+                  srcset="/__we_thumbs__/1591_7_timeEdition-logo-complete.png 330w,
+                          /__we_thumbs__/1591_3_timeEdition-logo-complete.png 370w,
+                          /__we_thumbs__/1591_8_timeEdition-logo-complete.png 450w,
+                          /__we_thumbs__/1591_9_timeEdition-logo-complete.png 540w,
+                          /timeedition/images/timeEdition-logo-complete.png 770w"
+                  sizes="(max-width: 320px) 330px,
+                         (max-width: 375px) 330px,
+                         (max-width: 414px) 450px,
+                         (max-width: 575px) 570px,
+                         (max-width: 768px) 770px,
+                         (max-width: 992px) 720px,
+                         570px"
+                  src="/timeedition/images/timeEdition-logo-complete.png"
+                  class="img-fluid mx-auto d-block mb-4 mb-lg-0"
+                  alt="timeEdition - time tracking for iPhone, Android and Mac">
+              </div>
+              <div class="col-12 col-lg-6 pr-lg-5 line-text order-lg-first position-relative">
+                <div class="line-text-outer">
+                  <div class="line-text-inner">
+                    <h3><strong>timeEdition</strong></h3>
+<p>With timeEdition you can see detailed documentation of your working hours. Be it for a billing of a client, or tracking the efficiency of a project.</p>
+<p>timeEdition puts great emphasis on ease of use. The user first sees only the functions that are needed for daily time tracking: Start and Stop recording of work time, work time elapsed, customer, project and task. You don't give away your time or your money. With timeEdition you have the perfect tool to track your work time and your colleagues work time. You can track the work outlay of your project and give your clients a detailed bill.</p>
+<p class="right-arrow"><a href="/timeedition/en/?m=1580890205&">Learn more</a></p>                  </div>
+                </div>
+              </div>
+            </div>
+                        </div>
+    </div>
+    </div>    </div>                  
+    <div class="mt-5">        <div class="container">
+      <div class="pt-3">
+        
+                      <div class="row">
+                            <div class="col-12 col-lg-6 order-lg-first">
+                <img
+                  srcset="/__we_thumbs__/1592_7_BetterEars-logo-complete.png 330w,
+                          /__we_thumbs__/1592_3_BetterEars-logo-complete.png 370w,
+                          /__we_thumbs__/1592_8_BetterEars-logo-complete.png 450w,
+                          /__we_thumbs__/1592_9_BetterEars-logo-complete.png 540w,
+                          /better-ears/images/BetterEars-logo-complete.png 770w"
+                  sizes="(max-width: 320px) 330px,
+                         (max-width: 375px) 330px,
+                         (max-width: 414px) 450px,
+                         (max-width: 575px) 570px,
+                         (max-width: 768px) 770px,
+                         (max-width: 992px) 720px,
+                         570px"
+                  src="/better-ears/images/BetterEars-logo-complete.png"
+                  class="img-fluid mx-auto d-block mb-4 mb-lg-0"
+                  alt="Better Ears - Ear Training and music theory ">
+              </div>
+              <div class="col-12 col-lg-6 pl-lg-5 line-text order-lg-last position-relative">
+                <div class="line-text-outer">
+                  <div class="line-text-inner">
+                    <h3><strong>Better Ears</strong></h3>
+<p>Improve your musical skills and train your hearing. Better Ears already offers thirteen different exercises, ranging from interval recognition to chord combinations, suitable for beginners as well as professionals.</p>
+<p class="right-arrow"><a href="/better-ears/en/?m=1580986730&">Learn more</a></p>                  </div>
+                </div>
+              </div>
+            </div>
+                        </div>
+    </div>
+        </div>                  
+    <div class="mt-5">    <div class="bg-light pt-4 pb-4">    <div class="container">
+      <div class="pt-3">
+        
+                      <div class="row">
+                            <div class="col-12 col-lg-6 order-lg-last">
+                <img
+                  srcset="/__we_thumbs__/1593_7_receiver-logo-complete.png 330w,
+                          /__we_thumbs__/1593_3_receiver-logo-complete.png 370w,
+                          /__we_thumbs__/1593_8_receiver-logo-complete.png 450w,
+                          /__we_thumbs__/1593_9_receiver-logo-complete.png 540w,
+                          /__we_thumbs__/1593_4_receiver-logo-complete.png 770w"
+                  sizes="(max-width: 320px) 330px,
+                         (max-width: 375px) 330px,
+                         (max-width: 414px) 450px,
+                         (max-width: 575px) 570px,
+                         (max-width: 768px) 770px,
+                         (max-width: 992px) 720px,
+                         570px"
+                  src="/__we_thumbs__/1593_4_receiver-logo-complete.png"
+                  class="img-fluid mx-auto d-block mb-4 mb-lg-0"
+                  alt="Receiver - radio app for iPhone, Android, Fire TV, Mac, Carplay">
+              </div>
+              <div class="col-12 col-lg-6 pr-lg-5 line-text order-lg-first position-relative">
+                <div class="line-text-outer">
+                  <div class="line-text-inner">
+                    <h3><strong>Receiver</strong></h3>
+<p>Receiver is the radio app. Receiver is available for iOS, Android, macOS, fireTV and Apple TV. With the Receiver Radio app you can receive over 40,000 radio stations and listen to over 25,000 podcasts. You can easily sync your favorite stations between your devices via iCloud or Dropbox. You don't need an additional account for this.</p>
+<p class="right-arrow"><a href="/receiver/en/?m=1569919456&">Learn more</a></p>                  </div>
+                </div>
+              </div>
+            </div>
+                        </div>
+    </div>
+    </div>    </div>        </div>    </main>
+      		<footer itemscope itemtype="http://schema.org/WPFooter">
+        <div class="container pt-3 pb-3 text-center">
+    <small>
+      <span class="d-block mb-2">Share this page</span>
+      <a class="btn btn-outline-light btn-sm pt-0 pr-3 pb-0 pl-3 text-muted" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.mamp.info%2Fen%2F" target="_blank" role="button" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+      <a class="btn btn-outline-light btn-sm pt-0 pr-3 pb-0 pl-3 text-muted" href="https://twitter.com/home?status=https%3A%2F%2Fwww.mamp.info%2Fen%2F" target="_blank" role="button" title="Twitter"><i class="fab fa-twitter"></i></a>
+            <a class="btn btn-outline-light btn-sm pt-0 pr-3 pb-0 pl-3 text-muted" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fwww.mamp.info%2Fen%2F&amp;title=MAMP+%26+MAMP+PRO+-+your+local+web+development+solution+for+PHP+and+WordPress+development&amp;summary=MAMP+GmbH+is+the+manufacturer+of+the+award-winning+MAMP+software.&amp;source=" target="_blank" role="button" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+    </small>
+  </div>
+  <div class="bg-dark pt-4 pb-2">
+    <div class="container">
+      <div class="row no-gutters">
+        <div class="col-12 col-md-3 text-center text-md-left">
+          <ul class="list-unstyled" itemscope itemtype="http://schema.org/SiteNavigationElement">
+            <li itemprop="url">
+              <a href="/en/mamp/"><span itemprop="name">MAMP</span></a> &amp; <a href="/en/mamp-pro/"><span itemprop="name">MAMP PRO</span></a>
+              <ul class="list-unstyled" itemscope itemtype="http://schema.org/SiteNavigationElement">
+                <li itemprop="url"><small><a href="/en/downloads/"><span itemprop="name"><i class="fas fa-download mr-1"></i> Downloads</span></a></small></li>  
+                <li itemprop="url"><small><a href="https://documentation.mamp.info" target="_blank"><span itemprop="name"><i class="fas fa-book mr-1"></i> Documentation</span></a></small></li>
+                <li itemprop="url">
+                  <small>
+                    <span itemscope itemtype="http://schema.org/Organization">
+                      <link itemprop="url" href="https://www.mamp.info">
+                      <a itemprop="sameAs" href="https://www.twitter.com/mamp_en" target="_blank"><i class="fab fa-twitter mr-1"></i> Follow us</a>
+                    </span>
+                  </small>
+                </li>
+                <li itemprop="url"><small><a href="http://www.mamp.tv" target="_blank"><i class="fas fa-film mr-1"></i> <span itemprop="name">MAMP.TV</span></a></small></li>
+                <li itemprop="url"><small><a href="https://mamp.one" target="_blank"><i class="fas fa-book-reader mr-1"></i> <span itemprop="name">MAMP.ONE</span></a></small></li>
+              </ul>
+            </li>
+            <li itemprop="url" class="mt-3">
+              <a href="/namo/en/"><span itemprop="name">NAMO</span></a>
+              <ul class="list-unstyled" itemscope itemtype="http://schema.org/SiteNavigationElement">
+                <li itemprop="url"><small><a href="https://downloads.mamp.info/NAMO/releases/mac/NAMO-1.0-66.dmg"><span itemprop="name"><i class="fas fa-download mr-1"></i> Download</span></a></small></li>  
+                <li itemprop="url"><small><a href="/namo/en/support/"><span itemprop="name"><i class="far fa-life-ring mr-1"></i> Support</span></a></small></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="col-12 col-md-3 text-center text-md-left">
+          <ul class="list-unstyled" itemscope itemtype="http://schema.org/SiteNavigationElement">
+            <li itemprop="url">
+              <a href="/timeedition/en/"><span itemprop="name">timeEdition</span></a>
+              <ul class="list-unstyled" itemscope itemtype="http://schema.org/SiteNavigationElement">
+                <li itemprop="url"><small><a href="https://geo.itunes.apple.com/us/app/timeedition-time-tracking/id1238604516?mt=12&app=apps" target="_blank"><span itemprop="name"><i class="fab fa-app-store mr-1"></i> Download on the Mac App Store</span></a></small></li>  
+                <li itemprop="url"><small><a href="https://itunes.apple.com/us/app/timeedition-time-tracking/id969800201?mt=8" target="_blank"><span itemprop="name"><i class="fab fa-app-store-ios mr-1"></i> Download on the App Store</span></a></small></li>  
+                <li itemprop="url"><small><a href="https://play.google.com/store/apps/details?id=de.appsolute.timeedition2&hl=en" target="_blank"><span itemprop="name"><i class="fab fa-google-play mr-1"></i> Get it on Google Play</span></a></small></li>  
+                <li itemprop="url"><small><a href="https://downloads.mamp.info/timeEdition/releases/mac/current.php" class="download"><span itemprop="name"><i class="fas fa-download mr-1"></i> Try macOS App now</span></a></small></li>  
+                <li itemprop="url"><small><a href="/timeedition/en/#store"><span itemprop="name"><i class="fas fa-shopping-cart mr-1"></i> Buy macOS App now</span></a></small></li>  
+                <li itemprop="url"><small><a href="/timeedition/en/retrieve-serial-numbers/"><span itemprop="name"><i class="fas fa-barcode mr-1"></i> Retrieve serial numbers</span></a></small></li>
+                <li itemprop="url">
+                  <small>
+                    <span itemscope itemtype="http://schema.org/Organization">
+                      <link itemprop="url" href="https://www.mamp.info//">
+                      <a itemprop="sameAs" href="https://twitter.com/timeeditionapp" target="_blank"><i class="fab fa-twitter mr-1"></i> Follow us</a>
+                    </span>
+                  </small>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="col-12 col-md-3 text-center text-md-left">
+          <ul class="list-unstyled" itemscope itemtype="http://schema.org/SiteNavigationElement">
+            <li itemprop="url">
+              <a href="/better-ears/en/"><span itemprop="name">Better Ears</span></a>
+              <ul class="list-unstyled" itemscope itemtype="http://schema.org/SiteNavigationElement">
+                <li itemprop="url"><small><a href="https://geo.itunes.apple.com/us/app/better-ears-music-ear-training/id575164882?mt=12&app=apps" target="_blank"><span itemprop="name"><i class="fab fa-app-store mr-1"></i> Download on the Mac App Store</span></a></small></li>  
+                <li itemprop="url"><small><a href="https://itunes.apple.com/us/app/better-ears-eartrainer/id284444548?mt=8" target="_blank"><span itemprop="name"><i class="fab fa-app-store-ios mr-1"></i> Download on the App Store</span></a></small></li>  
+                <li itemprop="url"><small><a href="https://play.google.com/store/apps/details?id=de.appsolute.betterearspremium" target="_blank"><span itemprop="name"><i class="fab fa-google-play mr-1"></i> Get it on Google Play</span></a></small></li>  
+                <li itemprop="url"><small><a href="https://www.better-ears.com/downloads/current" class="download"><span itemprop="name"><i class="fas fa-download mr-1"></i> Try macOS App now</span></a></small></li>  
+                <li itemprop="url"><small><a href="/better-ears/en/#store"><span itemprop="name"><i class="fas fa-shopping-cart mr-1"></i> Buy macOS App now</span></a></small></li>  
+                <li itemprop="url"><small><a href="/better-ears/en/retrieve-serial-numbers/"><span itemprop="name"><i class="fas fa-barcode mr-1"></i> Retrieve serial numbers</span></a></small></li>
+              </ul>
+            </li>
+            <li itemprop="url" class="mt-3">
+              <a href="/b-flat/en/"><span itemprop="name">B Flat</span></a>
+              <ul class="list-unstyled" itemscope itemtype="http://schema.org/SiteNavigationElement">
+                <li itemprop="url"><small><a href="https://itunes.apple.com/us/app/b-flat-sight-reading/id999375757?mt=8" target="_blank"><span itemprop="name"><i class="fab fa-app-store-ios mr-1"></i> Download on the App Store</span></a></small></li>  
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="col-12 col-md-3 text-center text-md-left">
+          <ul class="list-unstyled" itemscope itemtype="http://schema.org/SiteNavigationElement">
+            <li itemprop="url">
+              <a href="/receiver/en/"><span itemprop="name">Receiver</span></a>
+              <ul class="list-unstyled" itemscope itemtype="http://schema.org/SiteNavigationElement">
+                <li itemprop="url"><small><a href="https://itunes.apple.com/us/app/receiver-radio/id311658127?mt=8" target="_blank"><span itemprop="name"><i class="fab fa-app-store-ios mr-1"></i> Apple App Store</span></a></small></li>
+                <li itemprop="url"><small><a href="http://www.amazon.de/dp/B01DDX7MZQ" target="_blank"><span itemprop="name"><i class="fab fa-amazon mr-1"></i> Amazon</span></a></small></li>
+                <li itemprop="url"><small><a href="https://play.google.com/store/apps/details?id=de.appsolute.receiver.receiverphone" target="_blank"><span itemprop="name"><i class="fab fa-google-play mr-1"></i> Google Play</span></a></small></li>
+                <li itemprop="url">
+                  <small>
+                    <span itemscope itemtype="http://schema.org/Organization">
+                      <link itemprop="url" href="https://www.mamp.info//">
+                      <a itemprop="sameAs" href="https://twitter.com/receiverapp" target="_blank"><i class="fab fa-twitter mr-1"></i> Follow us</a>
+                    </span>
+                  </small>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <ul class="list-inline mt-3 text-center" itemscope itemtype="http://schema.org/SiteNavigationElement">
+        <li class="list-inline-item" itemprop="url"><small><a href="https://appsolute.zendesk.com/hc/en-us/requests/new" target="_blank"><span itemprop="name"><i class="far fa-life-ring mr-1"></i> Contact Support</span></a></small></li>
+        <li class="list-inline-item" itemprop="url"><small><a href="https://bugs.mamp.info" target="_blank"><span itemprop="name"><i class="fas fa-bug mr-1"></i> Bugbase</span></a></small></li>
+      </ul>
+      <ul class="list-inline text-center" itemscope itemtype="http://schema.org/SiteNavigationElement">
+                                                        <li class="list-inline-item" itemprop="url"><small><a href="/de/"><i class="fas fa-globe-americas mr-1"></i> <span itemprop="name">Deutsch</span></a></small></li>
+                                                            <li class="list-inline-item" itemprop="url"><small><a href="/ru/"><i class="fas fa-globe-americas mr-1"></i> <span itemprop="name" class="ru">русский</span></a></small></li>
+                                      <li class="list-inline-item" itemprop="url"><small><a href="/en/legal-notice/"><span itemprop="name">Legal Notice</span></a></small></li>
+        <li class="list-inline-item" itemprop="url"><small><a href="/en/privacy-policy/"><span itemprop="name">Privacy Policy</span></a></small></li>
+        <li class="list-inline-item" itemprop="url"><small><a href="/">&#169; <span itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><span itemprop="name">MAMP GmbH</span></span> <span itemprop="copyrightYear">2020</span></a></small></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+       
+
+      
+        <div class="modal fade" id="overlay-while-downloading" tabindex="-1" role="dialog" aria-labelledby="overlay-while-downloading-title" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header pt-2 pb-2 d-lg-none">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+
+        <div class="modal-body mt-4 mb-4">
+          <div class="text-center">
+            <p><img src="/namo/images/namo-logo.png" alt="NAMO logo" width="120" height="120"></p>
+            <h2 id="overlay-while-downloading-title" class="mt-4 mb-4"><strong>NAMO DNS App</strong><br>The perfect MAMP companion</h2>
+            <p class="lead m-0 p-0">Access your MAMP websites under a fixed domain name in the LAN instead of just an IP address. Perfect for testing on mobile devices.</p>
+            <p class="text-center mt-5">
+              <a class="btn btn-info mr-2" style="background-color: #4ca69d;" href="/namo/en/#download" role="button"><i class="fas fa-download mr-1"></i> Try Now</a>
+              <a class="btn btn-info ml-2" style="background-color: #4ca69d;" href="/namo/en/#store" role="button"><i class="fas fa-shopping-cart mr-1"></i> Buy NAMO</a>
+            </p>
+            <p>
+              <small><a href="/namo/en/">Learn more</a></small>
+            </p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="w-100 text-center">
+            <a href="/en/jobs/">Jobs: Support Engineer (m/f), Software Developer (m/f)</a>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+  		          <script type="text/javascript">
+      var _paq = window._paq || [];
+            _paq.push(['setDownloadExtensions', 'pkg|dmg|exe|zip']);
+      _paq.push(['setDownloadClasses', 'download']);
+      _paq.push(['enableHeartBeatTimer']);
+      _paq.push(['disableCookies']);
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      _paq.push(['trackAllContentImpressions']);
+      (function() {
+        var u="//a.mamp.info/";
+        _paq.push(['setTrackerUrl', u+'ap']);
+        _paq.push(['setSiteId', '1']);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'aj'; s.parentNode.insertBefore(g,s);
+      })();
+    </script>
+    <noscript><p><img src="//a.mamp.info/ap?idsite=1&amp;rec=1" style="border:0;" alt=""></p></noscript>
+          </body>
+</html>b)3Ji      ^Lo^Lo=A\ߥ^M��       :https://www.mamp.info/en/ necko:classified 1 strongly-framed 1 security-info FnhllAKWRHGAlo+ESXykKAAAAAAAAAAAwAAAAAAAAEaphjojH6pBabDSgSnsfLHeAAAAAgAAAAAAAAAAAAAAAAAAAAEAMQFmCjImkVxP+7sgiYWmMt8FvcOXmlQiTNWFiWlrbpbqgwAAAAAAAAXfMIIF2zCCBMOgAwIBAgIMccW2j1dHa/YW9T1uMA0GCSqGSIb3DQEBCwUAMEwxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSIwIAYDVQQDExlBbHBoYVNTTCBDQSAtIFNIQTI1NiAtIEcyMB4XDTE5MDMwMTA5MTMxMVoXDTIwMDMwMjA5MTYxM1owOTEhMB8GA1UECxMYRG9tYWluIENvbnRyb2wgVmFsaWRhdGVkMRQwEgYDVQQDDAsqLm1hbXAuaW5mbzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJ3+OJh+XjvvucRWBFiGfL0tvE5W0KuuH0LKNGlGzXBhg0bHj+DYA8qAR7e6m1xSv+Th6YbQuyG2A5+iicp4y2o+vOuIuoWxo3wi3temLctAzcLdeT92B2KIxb0MyU7kixm4sFWih89UDKxsLkmH1eedebX5b8JCMsboQi5+6OI/s0IucYjdJLpDo3aTm8fTPKCSywquTMCvnpWK6ZgWD8AL9Tzs28k604ny9g/cCt+XvLhUWcLSRDHfhXPvKe3+we+U5tK2wKbyiEeTs8arkoZwZUKMh/08k7zOKgv6GBpjZ5S3H++oJG4bKrA3mxS2q2a2PvZ+k9Mg0FKulArzbpsCAwEAAaOCAs4wggLKMA4GA1UdDwEB/wQEAwIFoDCBiQYIKwYBBQUHAQEEfTB7MEIGCCsGAQUFBzAChjZodHRwOi8vc2VjdXJlMi5hbHBoYXNzbC5jb20vY2FjZXJ0L2dzYWxwaGFzaGEyZzJyMS5jcnQwNQYIKwYBBQUHMAGGKWh0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNvbS9nc2FscGhhc2hhMmcyMFcGA1UdIARQME4wQgYKKwYBBAGgMgEKCjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAIBgZngQwBAgEwCQYDVR0TBAIwADA+BgNVHR8ENzA1MDOgMaAvhi1odHRwOi8vY3JsMi5hbHBoYXNzbC5jb20vZ3MvZ3NhbHBoYXNoYTJnMi5jcmwwIQYDVR0RBBowGIILKi5tYW1wLmluZm+CCW1hbXAuaW5mbzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwHQYDVR0OBBYEFJdNuOQNDvjpw9ntW5wEQDsIt6UVMB8GA1UdIwQYMBaAFPXN1TwIUPlqTzq3l9pWg+Zp0mj3MIIBBAYKKwYBBAHWeQIEAgSB9QSB8gDwAHYAh3W/51l8+IxDmV+9827/Vo1HVjb/SrVgwbTq/16ggw8AAAFpOIdtLwAABAMARzBFAiAt6Y9Y2doY6W3aLqA2ewzX9Yu2EG7dC/hgEjRrBnuToAIhAJdC2Z8j14uTOqDtZhhjvz6j6P+1hS1uWMqFaQu2WbRpAHYApLkJkLQYWBSHuxOizGdwCjw1mAT5G9+443fNDsgN3BAAAAFpOIdtTQAABAMARzBFAiEAxt+dnBC+YpkqmAzc1cNI1bga+R4OR1kjtDjntoDKvhICIAXIZMSsCR4eq5GuBwRv+mdKSdjLL1iM6gbf7JlmotoAMA0GCSqGSIb3DQEBCwUAA4IBAQAkh+1QqUjt8nOw+Gatq3TVWAkC7P7l2VP1MXcElLOet54wuoGu3WJBw34j5gRcNY7ZoHkjkbBCO/ng8PK1outEAbQHvVw0aqukxPKYLjebv3Z4ggCeI1L1yHQoFRJEcPsTuAo9mJ2/b9hpgbeWg9kOa7FIWhUhwVCrI6f2LdWC5bpkJv+SdCCTptgcIgFyq4UXQ9V8IldvpHUaqVMYFRVzk7NtN4g4BppXY0ZMDGHNRdc0V+myvR78sRn05PXNbSdYI5wFeFIi3z2sc1/jpqqZy+/2KDmQ3OGcPZU0xnO95nEXuIRw+kK6wa7nKSltwy3QTD03krAJXLLJtp/zRdLhwC8AAwAAAAABAQAAAAAAAARQMjU2AAAAEFJTQS1QS0NTMS1TSEE1MTIBlZ+xZWUXSH+rm9iRO+Uxl650zaXNL0c/lvXwt//2LGgAAAADZgoyJpFcT/u7IImFpjLfBb3Dl5pUIkzVhYlpa26W6oMAAAAAAAAF3zCCBdswggTDoAMCAQICDHHFto9XR2v2FvU9bjANBgkqhkiG9w0BAQsFADBMMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTEiMCAGA1UEAxMZQWxwaGFTU0wgQ0EgLSBTSEEyNTYgLSBHMjAeFw0xOTAzMDEwOTEzMTFaFw0yMDAzMDIwOTE2MTNaMDkxITAfBgNVBAsTGERvbWFpbiBDb250cm9sIFZhbGlkYXRlZDEUMBIGA1UEAwwLKi5tYW1wLmluZm8wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCd/jiYfl4777nEVgRYhny9LbxOVtCrrh9CyjRpRs1wYYNGx4/g2APKgEe3uptcUr/k4emG0LshtgOfoonKeMtqPrzriLqFsaN8It7Xpi3LQM3C3Xk/dgdiiMW9DMlO5IsZuLBVoofPVAysbC5Jh9XnnXm1+W/CQjLG6EIufujiP7NCLnGI3SS6Q6N2k5vH0zygkssKrkzAr56ViumYFg/AC/U87NvJOtOJ8vYP3Arfl7y4VFnC0kQx34Vz7ynt/sHvlObStsCm8ohHk7PGq5KGcGVCjIf9PJO8zioL+hgaY2eUtx/vqCRuGyqwN5sUtqtmtj72fpPTINBSrpQK826bAgMBAAGjggLOMIICyjAOBgNVHQ8BAf8EBAMCBaAwgYkGCCsGAQUFBwEBBH0wezBCBggrBgEFBQcwAoY2aHR0cDovL3NlY3VyZTIuYWxwaGFzc2wuY29tL2NhY2VydC9nc2FscGhhc2hhMmcycjEuY3J0MDUGCCsGAQUFBzABhilodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3NhbHBoYXNoYTJnMjBXBgNVHSAEUDBOMEIGCisGAQQBoDIBCgowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCAYGZ4EMAQIBMAkGA1UdEwQCMAAwPgYDVR0fBDcwNTAzoDGgL4YtaHR0cDovL2NybDIuYWxwaGFzc2wuY29tL2dzL2dzYWxwaGFzaGEyZzIuY3JsMCEGA1UdEQQaMBiCCyoubWFtcC5pbmZvggltYW1wLmluZm8wHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMB0GA1UdDgQWBBSXTbjkDQ746cPZ7VucBEA7CLelFTAfBgNVHSMEGDAWgBT1zdU8CFD5ak86t5faVoPmadJo9zCCAQQGCisGAQQB1nkCBAIEgfUEgfIA8AB2AId1v+dZfPiMQ5lfvfNu/1aNR1Y2/0q1YMG06v9eoIMPAAABaTiHbS8AAAQDAEcwRQIgLemPWNnaGOlt2i6gNnsM1/WLthBu3Qv4YBI0awZ7k6ACIQCXQtmfI9eLkzqg7WYYY78+o+j/tYUtbljKhWkLtlm0aQB2AKS5CZC0GFgUh7sTosxncAo8NZgE+RvfuON3zQ7IDdwQAAABaTiHbU0AAAQDAEcwRQIhAMbfnZwQvmKZKpgM3NXDSNW4GvkeDkdZI7Q457aAyr4SAiAFyGTErAkeHquRrgcEb/pnSknYyy9YjOoG3+yZZqLaADANBgkqhkiG9w0BAQsFAAOCAQEAJIftUKlI7fJzsPhmrat01VgJAuz+5dlT9TF3BJSznreeMLqBrt1iQcN+I+YEXDWO2aB5I5GwQjv54PDytaLrRAG0B71cNGqrpMTymC43m792eIIAniNS9ch0KBUSRHD7E7gKPZidv2/YaYG3loPZDmuxSFoVIcFQqyOn9i3VguW6ZCb/knQgk6bYHCIBcquFF0PVfCJXb6R1GqlTGBUVc5OzbTeIOAaaV2NGTAxhzUXXNFfpsr0e/LEZ9OT1zW0nWCOcBXhSIt89rHNf46aqmcvv9ig5kNzhnD2VNMZzveZxF7iEcPpCusGu5ykpbcMt0Ew9N5KwCVyyybaf80XS4WYKMiaRXE/7uyCJhaYy3wW9w5eaVCJM1YWJaWtuluqDAAAAAAAABFEwggRNMIIDNaADAgECAgsEAAAAAAFETvA2MTANBgkqhkiG9w0BAQsFADBXMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTEQMA4GA1UECxMHUm9vdCBDQTEbMBkGA1UEAxMSR2xvYmFsU2lnbiBSb290IENBMB4XDTE0MDIyMDEwMDAwMFoXDTI0MDIyMDEwMDAwMFowTDELMAkGA1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYtc2ExIjAgBgNVBAMTGUFscGhhU1NMIENBIC0gU0hBMjU2IC0gRzIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDaAezk7HNg+36ParfGF+OSZDLUrADZog+57e5riobKkmfZdNddRwI8j0DWnm0UzcPaKTmnDwUKaKJmGh7Esot2WOWrXR2PQLM5i+8eg30i0OOpAC7sU89iGYVEKEzAJ8t7DuwQZAAQpAXMoHK+QWwxW0jksey5I+tVTdB9YkqltKWkWYXFJZGm/qYJnwYQbY+BDGRAXnMAmuAuZZhUEABwmMjh7TRf2JzHDcDWI1lF/P5VeobulGAi8a7R5lVG9pnFGwh0X6ywZISPiTgcoaeQIU8Cbr3gYWfU+EKHDwr3yQRtKqkv70Kl392jU9uYHoH5mnJ7Wt5PPn+iWKDiF61nAgMBAAGjggEjMIIBHzAOBgNVHQ8BAf8EBAMCAQYwEgYDVR0TAQH/BAgwBgEB/wIBADAdBgNVHQ4EFgQU9c3VPAhQ+WpPOreX2laD5mnSaPcwRQYDVR0gBD4wPDA6BgRVHSAAMDIwMAYIKwYBBQUHAgEWJGh0dHBzOi8vd3d3LmFscGhhc3NsLmNvbS9yZXBvc2l0b3J5LzAzBgNVHR8ELDAqMCigJqAkhiJodHRwOi8vY3JsLmdsb2JhbHNpZ24ubmV0L3Jvb3QuY3JsMD0GCCsGAQUFBwEBBDEwLzAtBggrBgEFBQcwAYYhaHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vcm9vdHIxMB8GA1UdIwQYMBaAFGB7ZhpFDZfKiVAvfQTNNKj//P1LMA0GCSqGSIb3DQEBCwUAA4IBAQBgQGgWR+cWjdtcoVYqy/Rcm7Aeokv1ywI/+Auh8qdC1LdM6+NmgPMlQ3guGxdWB1IYy9Go7Ob7cz6kYoyAtNLFEnOj0/oCOL5jPYS4mcHxuvefw0DRWBhTwWLdrxhCfzROxUPVcbAwAMfjkK4/V4aXzuoMEo4icONmp1R/LijL1FTQsx5iZwj5J+HL42a4JBuJaolEZfLZTNJYHIxOwJWh1O9nLzgg6C7/llHwutg9knBHZRyec3K0YAxc4tFzduCvTuLlN6VFL4ojPofHMOYxOHz03VLK81MEJVdWZpToC+7mAxRO7v1tlGSeXs551LKmz0CxRKg+hxle6fghFllTZgoyJpFcT/u7IImFpjLfBb3Dl5pUIkzVhYlpa26W6oMAAAAAAAADeTCCA3UwggJdoAMCAQICCwQAAAAAARVLWsOUMA0GCSqGSIb3DQEBBQUAMFcxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMRAwDgYDVQQLEwdSb290IENBMRswGQYDVQQDExJHbG9iYWxTaWduIFJvb3QgQ0EwHhcNOTgwOTAxMTIwMDAwWhcNMjgwMTI4MTIwMDAwWjBXMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTEQMA4GA1UECxMHUm9vdCBDQTEbMBkGA1UEAxMSR2xvYmFsU2lnbiBSb290IENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2g7mmY3Oo+NPin778YuDJWvqSB/xKrC5lREEvfBj0eJnZs8c3c8bSCvujYmOmq8pgGWr6cctEsurHExwB6E9CjDNFY1P+N3UjFAVHO9Q7sQu9/zpUvKRfeBt1TUwjl5Dc/JB6dVq47KJOlY5OG8GPIhpWypNxadUuGyJzJv5PMrl/Yn1EjySeJbW3HRuk0Rh0Y3HRrJ1DoboGYrVbWzVeBaVounICjjr8iQTT3NUkxOFOhu8HjS1iwWMuXeLsdsfIJGrCVNukM57N3S5cEeRIlFjFnmusa5BJgjIGSvRRqpI1mQq14M0/ywqwWwZQ0oHhefTfPYhaO/q8lKff5OQzwIDAQABo0IwQDAOBgNVHQ8BAf8EBAMCAQYwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUYHtmGkUNl8qJUC99BM00qP/8/UswDQYJKoZIhvcNAQEFBQADggEBANZz53xPdtCNv+y6or40xSgytXz8bJwsK70JnlO/a16qEUi25Qijs8o9YU3TRgmzPsOg42NVG/K676054UO5OKPmL4omO++gUFb5xgr9OM3EC3BRlJeYBN/DX5TVFckUQZzEXXVkFQ3/VTDsho//De8suWNG9qr837xp/S4SSGSa4JXwpu8pjwGxFbUMHaX+aSxpJHges6cccWLuysiXrBddisL4R4ZuKsRWMZXQZ4mFK/lspl1GnQyqguSZUd1wt9tWPWHkauFc1vb+Pd5BzAeuY1K/U1P0K+nH/bb3gl+F0kEY24GzBBzFH6SAbxUgyd4MiAod1mZV4vxIySkmaeAA request-method GET request-Accept-Encoding gzip, deflate, br response-head HTTP/1.1 200 OK
+Date: Tue, 18 Feb 2020 23:11:14 GMT
+Server: Apache/2.4.41
+Last-Modified: Tue, 18 Feb 2020 12:25:29 GMT
+ETag: "9408-59ed8c47384da"
+Accept-Ranges: bytes
+Content-Length: 37896
+Cache-Control: max-age=86400
+Expires: Wed, 19 Feb 2020 23:11:14 GMT
+X-FRAME-OPTIONS: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
+ServerSignature: Off
+ServerTokens: Prod
+X-Permitted-Cross-Domain-Policies: master-only
+Vary: Accept-Encoding
+Content-Type: text/html; charset=utf-8
+ original-response-headers Date: Tue, 18 Feb 2020 23:11:14 GMT
+Server: Apache/2.4.41
+Last-Modified: Tue, 18 Feb 2020 12:25:29 GMT
+ETag: "9408-59ed8c47384da"
+Accept-Ranges: bytes
+Content-Length: 37896
+Cache-Control: max-age=86400
+Expires: Wed, 19 Feb 2020 23:11:14 GMT
+X-FRAME-OPTIONS: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
+ServerSignature: Off
+ServerTokens: Prod
+X-Permitted-Cross-Domain-Policies: master-only
+Vary: Accept-Encoding
+Connection: keep-alive, Keep-Alive
+Keep-Alive: timeout=5, max=100
+Content-Type: text/html; charset=utf-8
+ ctid 1 eTLD1Access 1;0;1517748388, uncompressed-len 0 net-response-time-onstart 5749 net-response-time-onstop 5764 predictor::resource-count 30 predictor::https://www.mamp.info/css/bootstrap.min.css 1,1,1582067468,4096 predictor::https://www.mamp.info/css/fonts.css 1,1,1582067468,4096 predictor::https://www.mamp.info/css/custom.css?t=1582028729 1,1,1582067468,4096 predictor::https://www.mamp.info/js/ovrly.js 1,1,1582067468,4096 predictor::https://www.mamp.info/js/jquery.min.js 1,1,1582067468,4096 predictor::https://www.mamp.info/js/popper.min.js 1,1,1582067468,4096 predictor::https://www.mamp.info/js/bootstrap.min.js 1,1,1582067468,4096 predictor::https://www.mamp.info/js/fontawesome.js 1,1,1582067468,4096 predictor::https://www.mamp.info/js/custom.js?t=1582028729 1,1,1582067468,4096 predictor::https://www.mamp.info/images/icons/mamp-gmbh.png 1,1,1582067468,4096 predictor::https://www.mamp.info/images/header/start/header-small.jpg 1,1,1582067468,4096 predictor::https://www.mamp.info/images/header/start/header-medium.jpg 1,1,1582067468,4096 predictor::https://www.mamp.info/images/header/start/header-large.jpg 1,1,1582067468,4096 predictor::https://www.mamp.info/images/header/start/header-extra-large.jpg 1,1,1582067468,4096 predictor::https://www.mamp.info/images/header/start/header-widescreen.jpg 1,1,1582067468,4096 predictor::https://www.mamp.info/images/header/start/text-mamp-and-mamp-pro.svg 1,1,1582067468,4096 predictor::https://www.mamp.info/images/mamp-on-imac-spiegel.png 1,1,1582067468,4096 predictor::https://www.mamp.info/__we_thumbs__/1284_4_MAMP-PRO-MacBook-Pro.png 1,1,1582067468,4096 predictor::https://www.mamp.info/namo/images/namo-logo-complete.png 1,1,1582067468,4096 predictor::https://www.mamp.info/timeedition/images/timeEdition-logo-complete.png 1,1,1582067468,4096 predictor::https://www.mamp.info/better-ears/images/BetterEars-logo-complete.png 1,1,1582067468,4096 predictor::https://www.mamp.info/__we_thumbs__/1593_4_receiver-logo-complete.png 1,1,1582067468,4096 predictor::https://www.mamp.info/namo/images/namo-logo.png 1,1,1582067468,4096 predictor::https://a.mamp.info/aj 1,1,1582067468,4097 predictor::https://www.mamp.info/fonts/raleway-v12-latin_latin-ext-regular.woff2 1,1,1582067468,4096 predictor::https://www.mamp.info/fonts/raleway-v12-latin_latin-ext-italic.woff2 1,1,1582067468,4096 predictor::https://www.mamp.info/fonts/raleway-v12-latin_latin-ext-700.woff2 1,1,1582067468,4096 predictor::https://www.mamp.info/fonts/raleway-v12-latin_latin-ext-200.woff2 1,1,1582067468,4096 predictor::https://a.mamp.info/ap?action_name=MAMP%20%26%20MAMP%20PRO%20-%20your%20local%20web%20development%20solution%20for%20PHP%20and%20WordPress%20development&idsite=1&rec=1&r=222360&h=18&m=11&s=31&url=https%3A%2F%2Fwww.mamp.info%2Fen%2F&urlref=https%3A%2F%2Fwww.google.com%2F&_id=&_idts=1582067491&_idvc=1&_idn=1&_refts=1582067491&_viewts=1582067491&_ref=https%3A%2F%2Fwww.google.com%2F&send_image=1&cookie=0&res=800x600&gt_ms=183&pv_id=8EgUMl 1,1,1582067468,4096 predictor::https://a.mamp.info/ap?ping=1&idsite=1&rec=1&r=138721&h=18&m=11&s=56&url=https%3A%2F%2Fwww.mamp.info%2Fen%2F&urlref=https%3A%2F%2Fwww.google.com%2F&_id=&_idts=1582067516&_idvc=1&_idn=1&_refts=1582067516&_viewts=1582067516&_ref=https%3A%2F%2Fwww.google.com%2F&send_image=1&cookie=0&res=800x600&gt_ms=183&pv_id=8EgUMl 1,1,1582067468,4096   �

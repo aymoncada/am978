@@ -1,0 +1,570 @@
+dispatcher_add(function(sammy) {
+    function path(p, r, t) {
+        sammy.get(p, function() {
+                render(r, t, p);
+            });
+    }
+    sammy.get('#/', function() {
+            var reqs = {'overview': {path:    '/overview',
+                                     options: {ranges: ['lengths-over',
+                                                        'msg-rates-over']}},
+                        'vhosts': '/vhosts'};
+            if (user_monitor) {
+                reqs['nodes'] = '/nodes';
+            }
+            render(reqs, 'overview', '#/');
+        });
+    sammy.get('#/login/:username/:password', login_route);
+
+    path('#/cluster-name', {'cluster_name': '/cluster-name'}, 'cluster-name');
+    sammy.put('#/cluster-name', function() {
+            if (sync_put(this, '/cluster-name')) {
+                setup_global_vars();
+                update();
+            }
+            return false;
+        });
+
+    sammy.get('#/nodes/:name', function() {
+            var name = esc(this.params['name']);
+            render({'node': {path:    '/nodes/' + name,
+                             options: {ranges: ['node-stats']}}},
+                   'node', '');
+            });
+
+    sammy.get('#/connections', function() {
+            renderConnections();
+        });
+
+
+    sammy.get('#/connections/:name', function() {
+            var name = esc(this.params['name']);
+            render({'connection': {path:    '/connections/' + name,
+                                   options: {ranges: ['data-rates-conn']}},
+                    'channels': '/connections/' + name + '/channels'},
+                'connection', '#/connections');
+        });
+    sammy.del('#/connections', function() {
+            var options = {headers: {
+              'X-Reason': this.params['reason']
+            }};
+            if (sync_delete(this, '/connections/:name', options)) {
+              go_to('#/connections');
+            }
+
+           return false;
+        });
+
+    sammy.get('#/channels', function() {
+            renderChannels();
+        });
+
+    sammy.get('#/channels/:name', function() {
+            render({'channel': {path:   '/channels/' + esc(this.params['name']),
+                                options:{ranges:['data-rates-ch','msg-rates-ch']}}},
+                   'channel', '#/channels');
+        });
+
+    
+    sammy.get('#/exchanges', function() {
+            renderExchanges();
+        });
+
+
+    sammy.get('#/exchanges/:vhost/:name', function() {
+            var path = '/exchanges/' + esc(this.params['vhost']) + '/' + esc(this.params['name']);
+            render({'exchange': {path:    path,
+                                 options: {ranges:['msg-rates-x']}},
+                    'bindings_source': path + '/bindings/source',
+                    'bindings_destination': path + '/bindings/destination'},
+                'exchange', '#/exchanges');
+        });
+    sammy.put('#/exchanges', function() {
+            if (sync_put(this, '/exchanges/:vhost/:name'))
+                update();
+            return false;
+        });
+    sammy.del('#/exchanges', function() {
+            if (sync_delete(this, '/exchanges/:vhost/:name'))
+                go_to('#/exchanges');
+            return false;
+        });
+    sammy.post('#/exchanges/publish', function() {
+            publish_msg(this.params);
+            return false;
+        });
+
+    sammy.get('#/queues', function() {
+                          renderQueues();
+            });
+
+    
+    sammy.get('#/queues/:vhost/:name', function() {
+            var path = '/queues/' + esc(this.params['vhost']) + '/' + esc(this.params['name']);
+            render({'queue': {path:    path,
+                              options: {ranges:['lengths-q', 'msg-rates-q', 'data-rates-q']}},
+                    'bindings': path + '/bindings'}, 'queue', '#/queues');
+        });
+    sammy.put('#/queues', function() {
+            if (sync_put(this, '/queues/:vhost/:name'))
+                update();
+            return false;
+        });
+    sammy.del('#/queues', function() {
+            if (this.params['mode'] == 'delete') {
+                if (sync_delete(this, '/queues/:vhost/:name'))
+                    go_to('#/queues');
+            }
+            else if (this.params['mode'] == 'purge') {
+                if (sync_delete(this, '/queues/:vhost/:name/contents')) {
+                    show_popup('info', "Queue purged");
+                    update_partial();
+                }
+            }
+            return false;
+        });
+    sammy.post('#/queues/get', function() {
+            get_msgs(this.params);
+            return false;
+        });
+    sammy.post('#/queues/actions', function() {
+            if (sync_post(this, '/queues/:vhost/:name/actions'))
+                // We can't refresh fast enough, it's racy. So grey
+                // the button and wait for a normal refresh.
+                $('#action-button').addClass('wait').prop('disabled', true);
+            return false;
+        });
+    sammy.post('#/bindings', function() {
+            if (sync_post(this, '/bindings/:vhost/e/:source/:destination_type/:destination'))
+                update();
+            return false;
+        });
+    sammy.del('#/bindings', function() {
+            if (sync_delete(this, '/bindings/:vhost/e/:source/:destination_type/:destination/:properties_key'))
+                update();
+            return false;
+        });
+
+    path('#/vhosts', {'vhosts':  {path:    '/vhosts',
+                                  options: {sort:true}},
+                      'permissions': '/permissions'}, 'vhosts');
+    sammy.get('#/vhosts/:id', function() {
+            render({'vhost': {path:    '/vhosts/' + esc(this.params['id']),
+                              options: {ranges: ['lengths-vhost',
+                                                 'msg-rates-vhost',
+                                                 'data-rates-vhost']}},
+                    'permissions': '/vhosts/' + esc(this.params['id']) + '/permissions',
+                    'users': '/users/'},
+                'vhost', '#/vhosts');
+        });
+
+    sammy.put('#/vhosts', function() {
+            if (sync_put(this, '/vhosts/:name')) {
+                update_vhosts();
+                update();
+            }
+            return false;
+        });
+    sammy.del('#/vhosts', function() {
+            if (sync_delete(this, '/vhosts/:name')) {
+                update_vhosts();
+                go_to('#/vhosts');
+            }
+            return false;
+        });
+
+    path('#/users', {'users': {path:    '/users',
+                               options: {sort:true}},
+                     'permissions': '/permissions'}, 'users');
+    sammy.get('#/users/:id', function() {
+            render({'user': '/users/' + esc(this.params['id']),
+                    'permissions': '/users/' + esc(this.params['id']) + '/permissions',
+                    'vhosts': '/vhosts/'}, 'user',
+                   '#/users');
+        });
+    sammy.put('#/users-add', function() {
+            if (sync_put(this, '/users/:username'))
+                update();
+            return false;
+        });
+    sammy.put('#/users-modify', function() {
+            if (sync_put(this, '/users/:username'))
+                go_to('#/users');
+            return false;
+        });
+    sammy.del('#/users', function() {
+            if (sync_delete(this, '/users/:username'))
+                go_to('#/users');
+            return false;
+        });
+
+    sammy.put('#/permissions', function() {
+            if (sync_put(this, '/permissions/:vhost/:username'))
+                update();
+            return false;
+        });
+    sammy.del('#/permissions', function() {
+            if (sync_delete(this, '/permissions/:vhost/:username'))
+                update();
+            return false;
+        });
+    path('#/policies', {'policies': '/policies',
+                        'vhosts':   '/vhosts'}, 'policies');
+    sammy.get('#/policies/:vhost/:id', function() {
+            render({'policy': '/policies/' + esc(this.params['vhost'])
+                        + '/' + esc(this.params['id'])},
+                'policy', '#/policies');
+        });
+    sammy.put('#/policies', function() {
+            put_policy(this, ['name', 'pattern', 'policy'], ['priority'], []);
+            return false;
+        });
+    sammy.del('#/policies', function() {
+            if (sync_delete(this, '/policies/:vhost/:name'))
+                go_to('#/policies');
+            return false;
+        });
+
+    sammy.put('#/logout', function() {
+            // clear a local storage value used by earlier versions
+            clear_pref('auth');
+            clear_cookie_value('auth');
+            location.reload();
+        });
+
+    sammy.get('#/import-succeeded', function() {
+            render({}, 'import-succeeded', '#/overview');
+        });
+    sammy.put('#/rate-options', function() {
+            update_rate_options(this);
+        });
+    sammy.put('#/column-options', function() {
+            update_column_options(this);
+        });
+    sammy.del("#/reset", function(){
+            if(sync_delete(this, '/reset')){
+                update();
+            }
+        });
+    sammy.del("#/reset_node", function(){
+            if(sync_delete(this, '/reset/:node')){
+                update();
+            }
+        });
+});
+        20190718161435                          ?$      ?$    ?$  d i s p a t c h e r _ a d d ( f u n c t i o n ( s a m m y )   { 
+         f u n c t i o n   p a t h ( p ,   r ,   t )   { 
+                 s a m m y . g e t ( p ,   f u n c t i o n ( )   { 
+                                 r e n d e r ( r ,   t ,   p ) ; 
+                         } ) ; 
+         } 
+         s a m m y . g e t ( ' # / ' ,   f u n c t i o n ( )   { 
+                         v a r   r e q s   =   { ' o v e r v i e w ' :   { p a t h :         ' / o v e r v i e w ' , 
+                                                                           o p t i o n s :   { r a n g e s :   [ ' l e n g t h s - o v e r ' , 
+                                                                                                                 ' m s g - r a t e s - o v e r ' ] } } , 
+                                                 ' v h o s t s ' :   ' / v h o s t s ' } ; 
+                         i f   ( u s e r _ m o n i t o r )   { 
+                                 r e q s [ ' n o d e s ' ]   =   ' / n o d e s ' ; 
+                         } 
+                         r e n d e r ( r e q s ,   ' o v e r v i e w ' ,   ' # / ' ) ; 
+                 } ) ; 
+         s a m m y . g e t ( ' # / l o g i n / : u s e r n a m e / : p a s s w o r d ' ,   l o g i n _ r o u t e ) ; 
+ 
+         p a t h ( ' # / c l u s t e r - n a m e ' ,   { ' c l u s t e r _ n a m e ' :   ' / c l u s t e r - n a m e ' } ,   ' c l u s t e r - n a m e ' ) ; 
+         s a m m y . p u t ( ' # / c l u s t e r - n a m e ' ,   f u n c t i o n ( )   { 
+                         i f   ( s y n c _ p u t ( t h i s ,   ' / c l u s t e r - n a m e ' ) )   { 
+                                 s e t u p _ g l o b a l _ v a r s ( ) ; 
+                                 u p d a t e ( ) ; 
+                         } 
+                         r e t u r n   f a l s e ; 
+                 } ) ; 
+ 
+         s a m m y . g e t ( ' # / n o d e s / : n a m e ' ,   f u n c t i o n ( )   { 
+                         v a r   n a m e   =   e s c ( t h i s . p a r a m s [ ' n a m e ' ] ) ; 
+                         r e n d e r ( { ' n o d e ' :   { p a t h :         ' / n o d e s / '   +   n a m e , 
+                                                           o p t i o n s :   { r a n g e s :   [ ' n o d e - s t a t s ' ] } } } , 
+                                       ' n o d e ' ,   ' ' ) ; 
+                         } ) ; 
+ 
+         s a m m y . g e t ( ' # / c o n n e c t i o n s ' ,   f u n c t i o n ( )   { 
+                         r e n d e r C o n n e c t i o n s ( ) ; 
+                 } ) ; 
+ 
+ 
+         s a m m y . g e t ( ' # / c o n n e c t i o n s / : n a m e ' ,   f u n c t i o n ( )   { 
+                         v a r   n a m e   =   e s c ( t h i s . p a r a m s [ ' n a m e ' ] ) ; 
+                         r e n d e r ( { ' c o n n e c t i o n ' :   { p a t h :         ' / c o n n e c t i o n s / '   +   n a m e , 
+                                                                       o p t i o n s :   { r a n g e s :   [ ' d a t a - r a t e s - c o n n ' ] } } , 
+                                         ' c h a n n e l s ' :   ' / c o n n e c t i o n s / '   +   n a m e   +   ' / c h a n n e l s ' } , 
+                                 ' c o n n e c t i o n ' ,   ' # / c o n n e c t i o n s ' ) ; 
+                 } ) ; 
+         s a m m y . d e l ( ' # / c o n n e c t i o n s ' ,   f u n c t i o n ( )   { 
+                         v a r   o p t i o n s   =   { h e a d e r s :   { 
+                             ' X - R e a s o n ' :   t h i s . p a r a m s [ ' r e a s o n ' ] 
+                         } } ; 
+                         i f   ( s y n c _ d e l e t e ( t h i s ,   ' / c o n n e c t i o n s / : n a m e ' ,   o p t i o n s ) )   { 
+                             g o _ t o ( ' # / c o n n e c t i o n s ' ) ; 
+                         } 
+ 
+                       r e t u r n   f a l s e ; 
+                 } ) ; 
+ 
+         s a m m y . g e t ( ' # / c h a n n e l s ' ,   f u n c t i o n ( )   { 
+                         r e n d e r C h a n n e l s ( ) ; 
+                 } ) ; 
+ 
+         s a m m y . g e t ( ' # / c h a n n e l s / : n a m e ' ,   f u n c t i o n ( )   { 
+                         r e n d e r ( { ' c h a n n e l ' :   { p a t h :       ' / c h a n n e l s / '   +   e s c ( t h i s . p a r a m s [ ' n a m e ' ] ) , 
+                                                                 o p t i o n s : { r a n g e s : [ ' d a t a - r a t e s - c h ' , ' m s g - r a t e s - c h ' ] } } } , 
+                                       ' c h a n n e l ' ,   ' # / c h a n n e l s ' ) ; 
+                 } ) ; 
+ 
+         
+         s a m m y . g e t ( ' # / e x c h a n g e s ' ,   f u n c t i o n ( )   { 
+                         r e n d e r E x c h a n g e s ( ) ; 
+                 } ) ; 
+ 
+ 
+         s a m m y . g e t ( ' # / e x c h a n g e s / : v h o s t / : n a m e ' ,   f u n c t i o n ( )   { 
+                         v a r   p a t h   =   ' / e x c h a n g e s / '   +   e s c ( t h i s . p a r a m s [ ' v h o s t ' ] )   +   ' / '   +   e s c ( t h i s . p a r a m s [ ' n a m e ' ] ) ; 
+                         r e n d e r ( { ' e x c h a n g e ' :   { p a t h :         p a t h , 
+                                                                   o p t i o n s :   { r a n g e s : [ ' m s g - r a t e s - x ' ] } } , 
+                                         ' b i n d i n g s _ s o u r c e ' :   p a t h   +   ' / b i n d i n g s / s o u r c e ' , 
+                                         ' b i n d i n g s _ d e s t i n a t i o n ' :   p a t h   +   ' / b i n d i n g s / d e s t i n a t i o n ' } , 
+                                 ' e x c h a n g e ' ,   ' # / e x c h a n g e s ' ) ; 
+                 } ) ; 
+         s a m m y . p u t ( ' # / e x c h a n g e s ' ,   f u n c t i o n ( )   { 
+                         i f   ( s y n c _ p u t ( t h i s ,   ' / e x c h a n g e s / : v h o s t / : n a m e ' ) ) 
+                                 u p d a t e ( ) ; 
+                         r e t u r n   f a l s e ; 
+                 } ) ; 
+         s a m m y . d e l ( ' # / e x c h a n g e s ' ,   f u n c t i o n ( )   { 
+                         i f   ( s y n c _ d e l e t e ( t h i s ,   ' / e x c h a n g e s / : v h o s t / : n a m e ' ) ) 
+                                 g o _ t o ( ' # / e x c h a n g e s ' ) ; 
+                         r e t u r n   f a l s e ; 
+                 } ) ; 
+         s a m m y . p o s t ( ' # / e x c h a n g e s / p u b l i s h ' ,   f u n c t i o n ( )   { 
+                         p u b l i s h _ m s g ( t h i s . p a r a m s ) ; 
+                         r e t u r n   f a l s e ; 
+                 } ) ; 
+ 
+         s a m m y . g e t ( ' # / q u e u e s ' ,   f u n c t i o n ( )   { 
+                                                     r e n d e r Q u e u e s ( ) ; 
+                         } ) ; 
+ 
+         
+         s a m m y . g e t ( ' # / q u e u e s / : v h o s t / : n a m e ' ,   f u n c t i o n ( )   { 
+                         v a r   p a t h   =   ' / q u e u e s / '   +   e s c ( t h i s . p a r a m s [ ' v h o s t ' ] )   +   ' / '   +   e s c ( t h i s . p a r a m s [ ' n a m e ' ] ) ; 
+                         r e n d e r ( { ' q u e u e ' :   { p a t h :         p a t h , 
+                                                             o p t i o n s :   { r a n g e s : [ ' l e n g t h s - q ' ,   ' m s g - r a t e s - q ' ,   ' d a t a - r a t e s - q ' ] } } , 
+                                         ' b i n d i n g s ' :   p a t h   +   ' / b i n d i n g s ' } ,   ' q u e u e ' ,   ' # / q u e u e s ' ) ; 
+                 } ) ; 
+         s a m m y . p u t ( ' # / q u e u e s ' ,   f u n c t i o n ( )   { 
+                         i f   ( s y n c _ p u t ( t h i s ,   ' / q u e u e s / : v h o s t / : n a m e ' ) ) 
+                                 u p d a t e ( ) ; 
+                         r e t u r n   f a l s e ; 
+                 } ) ; 
+         s a m m y . d e l ( ' # / q u e u e s ' ,   f u n c t i o n ( )   { 
+                         i f   ( t h i s . p a r a m s [ ' m o d e ' ]   = =   ' d e l e t e ' )   { 
+                                 i f   ( s y n c _ d e l e t e ( t h i s ,   ' / q u e u e s / : v h o s t / : n a m e ' ) ) 
+                                         g o _ t o ( ' # / q u e u e s ' ) ; 
+                         } 
+                         e l s e   i f   ( t h i s . p a r a m s [ ' m o d e ' ]   = =   ' p u r g e ' )   { 
+                                 i f   ( s y n c _ d e l e t e ( t h i s ,   ' / q u e u e s / : v h o s t / : n a m e / c o n t e n t s ' ) )   { 
+                                         s h o w _ p o p u p ( ' i n f o ' ,   " Q u e u e   p u r g e d " ) ; 
+                                         u p d a t e _ p a r t i a l ( ) ; 
+                                 } 
+                         } 
+                         r e t u r n   f a l s e ; 
+                 } ) ; 
+         s a m m y . p o s t ( ' # / q u e u e s / g e t ' ,   f u n c t i o n ( )   { 
+                         g e t _ m s g s ( t h i s . p a r a m s ) ; 
+                         r e t u r n   f a l s e ; 
+                 } ) ; 
+         s a m m y . p o s t ( ' # / q u e u e s / a c t i o n s ' ,   f u n c t i o n ( )   { 
+                         i f   ( s y n c _ p o s t ( t h i s ,   ' / q u e u e s / : v h o s t / : n a m e / a c t i o n s ' ) ) 
+                                 / /   W e   c a n ' t   r e f r e s h   f a s t   e n o u g h ,   i t ' s   r a c y .   S o   g r e y 
+                                 / /   t h e   b u t t o n   a n d   w a i t   f o r   a   n o r m a l   r e f r e s h . 
+                                 $ ( ' # a c t i o n - b u t t o n ' ) . a d d C l a s s ( ' w a i t ' ) . p r o p ( ' d i s a b l e d ' ,   t r u e ) ; 
+                         r e t u r n   f a l s e ; 
+                 } ) ; 
+         s a m m y . p o s t ( ' # / b i n d i n g s ' ,   f u n c t i o n ( )   { 
+                         i f   ( s y n c _ p o s t ( t h i s ,   ' / b i n d i n g s / : v h o s t / e / : s o u r c e / : d e s t i n a t i o n _ t y p e / : d e s t i n a t i o n ' ) ) 
+                                 u p d a t e ( ) ; 
+                         r e t u r n   f a l s e ; 
+                 } ) ; 
+         s a m m y . d e l ( ' # / b i n d i n g s ' ,   f u n c t i o n ( )   { 
+                         i f   ( s y n c _ d e l e t e ( t h i s ,   ' / b i n d i n g s / : v h o s t / e / : s o u r c e / : d e s t i n a t i o n _ t y p e / : d e s t i n a t i o n / : p r o p e r t i e s _ k e y ' ) ) 
+                                 u p d a t e ( ) ; 
+                         r e t u r n   f a l s e ; 
+                 } ) ; 
+ 
+         p a t h ( ' # / v h o s t s ' ,   { ' v h o s t s ' :     { p a t h :         ' / v h o s t s ' , 
+                                                                     o p t i o n s :   { s o r t : t r u e } } , 
+                                             ' p e r m i s s i o n s ' :   ' / p e r m i s s i o n s ' } ,   ' v h o s t s ' ) ; 
+         s a m m y . g e t ( ' # / v h o s t s / : i d ' ,   f u n c t i o n ( )   { 
+                         r e n d e r ( { ' v h o s t ' :   { p a t h :         ' / v h o s t s / '   +   e s c ( t h i s . p a r a m s [ ' i d ' ] ) , 
+                                                             o p t i o n s :   { r a n g e s :   [ ' l e n g t h s - v h o s t ' , 
+                                                                                                   ' m s g - r a t e s - v h o s t ' , 
+                                                                                                   ' d a t a - r a t e s - v h o s t ' ] } } , 
+                                         ' p e r m i s s i o n s ' :   ' / v h o s t s / '   +   e s c ( t h i s . p a r a m s [ ' i d ' ] )   +   ' / p e r m i s s i o n s ' , 
+                                         ' u s e r s ' :   ' / u s e r s / ' } , 
+                                 ' v h o s t ' ,   ' # / v h o s t s ' ) ; 
+                 } ) ; 
+ 
+         s a m m y . p u t ( ' # / v h o s t s ' ,   f u n c t i o n ( )   { 
+                         i f   ( s y n c _ p u t ( t h i s ,   ' / v h o s t s / : n a m e ' ) )   { 
+                                 u p d a t e _ v h o s t s ( ) ; 
+                                 u p d a t e ( ) ; 
+                         } 
+                         r e t u r n   f a l s e ; 
+                 } ) ; 
+         s a m m y . d e l ( ' # / v h o s t s ' ,   f u n c t i o n ( )   { 
+                         i f   ( s y n c _ d e l e t e ( t h i s ,   ' / v h o s t s / : n a m e ' ) )   { 
+                                 u p d a t e _ v h o s t s ( ) ; 
+                                 g o _ t o ( ' # / v h o s t s ' ) ; 
+                         } 
+                         r e t u r n   f a l s e ; 
+                 } ) ; 
+ 
+         p a t h ( ' # / u s e r s ' ,   { ' u s e r s ' :   { p a t h :         ' / u s e r s ' , 
+                                                               o p t i o n s :   { s o r t : t r u e } } , 
+                                           ' p e r m i s s i o n s ' :   ' / p e r m i s s i o n s ' } ,   ' u s e r s ' ) ; 
+         s a m m y . g e t ( ' # / u s e r s / : i d ' ,   f u n c t i o n ( )   { 
+                         r e n d e r ( { ' u s e r ' :   ' / u s e r s / '   +   e s c ( t h i s . p a r a m s [ ' i d ' ] ) , 
+                                         ' p e r m i s s i o n s ' :   ' / u s e r s / '   +   e s c ( t h i s . p a r a m s [ ' i d ' ] )   +   ' / p e r m i s s i o n s ' , 
+                                         ' v h o s t s ' :   ' / v h o s t s / ' } ,   ' u s e r ' , 
+                                       ' # / u s e r s ' ) ; 
+                 } ) ; 
+         s a m m y . p u t ( ' # / u s e r s - a d d ' ,   f u n c t i o n ( )   { 
+                         i f   ( s y n c _ p u t ( t h i s ,   ' / u s e r s / : u s e r n a m e ' ) ) 
+                                 u p d a t e ( ) ; 
+                         r e t u r n   f a l s e ; 
+                 } ) ; 
+         s a m m y . p u t ( ' # / u s e r s - m o d i f y ' ,   f u n c t i o n ( )   { 
+                         i f   ( s y n c _ p u t ( t h i s ,   ' / u s e r s / : u s e r n a m e ' ) ) 
+                                 g o _ t o ( ' # / u s e r s ' ) ; 
+                         r e t u r n   f a l s e ; 
+                 } ) ; 
+         s a m m y . d e l ( ' # / u s e r s ' ,   f u n c t i o n ( )   { 
+                         i f   ( s y n c _ d e l e t e ( t h i s ,   ' / u s e r s / : u s e r n a m e ' ) ) 
+                                 g o _ t o ( ' # / u s e r s ' ) ; 
+                         r e t u r n   f a l s e ; 
+                 } ) ; 
+ 
+         s a m m y . p u t ( ' # / p e r m i s s i o n s ' ,   f u n c t i o n ( )   { 
+                         i f   ( s y n c _ p u t ( t h i s ,   ' / p e r m i s s i o n s / : v h o s t / : u s e r n a m e ' ) ) 
+                                 u p d a t e ( ) ; 
+                         r e t u r n   f a l s e ; 
+                 } ) ; 
+         s a m m y . d e l ( ' # / p e r m i s s i o n s ' ,   f u n c t i o n ( )   { 
+                         i f   ( s y n c _ d e l e t e ( t h i s ,   ' / p e r m i s s i o n s / : v h o s t / : u s e r n a m e ' ) ) 
+                                 u p d a t e ( ) ; 
+                         r e t u r n   f a l s e ; 
+                 } ) ; 
+         p a t h ( ' # / p o l i c i e s ' ,   { ' p o l i c i e s ' :   ' / p o l i c i e s ' , 
+                                                 ' v h o s t s ' :       ' / v h o s t s ' } ,   ' p o l i c i e s ' ) ; 
+         s a m m y . g e t ( ' # / p o l i c i e s / : v h o s t / : i d ' ,   f u n c t i o n ( )   { 
+                         r e n d e r ( { ' p o l i c y ' :   ' / p o l i c i e s / '   +   e s c ( t h i s . p a r a m s [ ' v h o s t ' ] ) 
+                                                 +   ' / '   +   e s c ( t h i s . p a r a m s [ ' i d ' ] ) } , 
+                                 ' p o l i c y ' ,   ' # / p o l i c i e s ' ) ; 
+                 } ) ; 
+         s a m m y . p u t ( ' # / p o l i c i e s ' ,   f u n c t i o n ( )   { 
+                         p u t _ p o l i c y ( t h i s ,   [ ' n a m e ' ,   ' p a t t e r n ' ,   ' p o l i c y ' ] ,   [ ' p r i o r i t y ' ] ,   [ ] ) ; 
+                         r e t u r n   f a l s e ; 
+                 } ) ; 
+         s a m m y . d e l ( ' # / p o l i c i e s ' ,   f u n c t i o n ( )   { 
+                         i f   ( s y n c _ d e l e t e ( t h i s ,   ' / p o l i c i e s / : v h o s t / : n a m e ' ) ) 
+                                 g o _ t o ( ' # / p o l i c i e s ' ) ; 
+                         r e t u r n   f a l s e ; 
+                 } ) ; 
+ 
+         s a m m y . p u t ( ' # / l o g o u t ' ,   f u n c t i o n ( )   { 
+                         / /   c l e a r   a   l o c a l   s t o r a g e   v a l u e   u s e d   b y   e a r l i e r   v e r s i o n s 
+                         c l e a r _ p r e f ( ' a u t h ' ) ; 
+                         c l e a r _ c o o k i e _ v a l u e ( ' a u t h ' ) ; 
+                         l o c a t i o n . r e l o a d ( ) ; 
+                 } ) ; 
+ 
+         s a m m y . g e t ( ' # / i m p o r t - s u c c e e d e d ' ,   f u n c t i o n ( )   { 
+                         r e n d e r ( { } ,   ' i m p o r t - s u c c e e d e d ' ,   ' # / o v e r v i e w ' ) ; 
+                 } ) ; 
+         s a m m y . p u t ( ' # / r a t e - o p t i o n s ' ,   f u n c t i o n ( )   { 
+                         u p d a t e _ r a t e _ o p t i o n s ( t h i s ) ; 
+                 } ) ; 
+         s a m m y . p u t ( ' # / c o l u m n - o p t i o n s ' ,   f u n c t i o n ( )   { 
+                         u p d a t e _ c o l u m n _ o p t i o n s ( t h i s ) ; 
+                 } ) ; 
+         s a m m y . d e l ( " # / r e s e t " ,   f u n c t i o n ( ) { 
+                         i f ( s y n c _ d e l e t e ( t h i s ,   ' / r e s e t ' ) ) { 
+                                 u p d a t e ( ) ; 
+                         } 
+                 } ) ; 
+         s a m m y . d e l ( " # / r e s e t _ n o d e " ,   f u n c t i o n ( ) { 
+                         i f ( s y n c _ d e l e t e ( t h i s ,   ' / r e s e t / : n o d e ' ) ) { 
+                                 u p d a t e ( ) ; 
+                         } 
+                 } ) ; 
+ } ) ; 
+   (       http://localhost:15672/js/dispatcher.js                       á!´!ˇˇˇˇ            ´+íHç!´!       C                           <$     <$           0               å!´!ˇˇˇˇ      sammy	   path       ´+íHç!´!       	   path                         2   ñ   %   ñ                           å!´!ˇˇˇˇ      p   r   t        ´+íHç!´!    	      path/<b  [   é   S   é             ˇˇˇˇ        5ûöò;¯                             à  ∏    
+à   Ç    Á Qô†ò∏∞÷ò∞¨ò∞    get 5ûç!´!       B  ≥   C  ´   C            ˇˇˇˇ        5ûé!´!       é!´!   cluster_nameã!´!    ç!´!       B  ˘  °  Ò  °     (      ˇˇˇˇ        5ûç!´!       B  Ã  ©  ƒ  ©     '      ˇˇˇˇ        5ûç!´!        C   #   '                  ‘    Ã                              å!´!ˇˇˇˇ               ´+íHöò;¯                              ö    ù    Á  Qô†ò∏∞Œ†ò∞ #   renderConnections    ˇˇˇˇ    5ûç!´!       B  5  {  -  {  (   -      ˇˇˇˇ        5ûç!´!       B  •  ´  ù  ´  /   '      ˇˇˇˇ        5ûç!´!       B  ”  ˇ  À  ˇ  :   $       ˇˇˇˇ        5ûç!´!       B  -  	  %  	  >   *      ˇˇˇˇ        5ûç!´!       B  <	  i	  4	  i	  E   %       ˇˇˇˇ        5ûç!´!       B  †	  A  ò	  A  J   2      ˇˇˇˇ        5ûç!´!       B  i  Ê  a  Ê  R   %      ˇˇˇˇ        5ûç!´!       B    ö    ö  W   %      ˇˇˇˇ        5ûç!´!       B  À    √    \   .      ˇˇˇˇ        5ûç!´!       B  ?  {  7  {  a   "       ˇˇˇˇ        5ûç!´!       B  ≥  ¯  ´  ¯  f   /      ˇˇˇˇ        5ûç!´!       B    ó    ó  l   "      ˇˇˇˇ        5ûç!´!       B  º  ä  ¥  ä  q   "      ˇˇˇˇ        5ûç!´!       B  ¥  ˇ  ¨  ˇ  ~   '      ˇˇˇˇ        5ûç!´!       B  -  d  %  d  Ç   +      ˇˇˇˇ        5ûç!´!       B  å  ,  Ñ  ,  â   %      ˇˇˇˇ        5ûç!´!       B  S    K    é   $      ˇˇˇˇ        5ûé!´!       é!´!	   sortã!´!    é!´!       é!´!	   pathã!´!é!´!   optionsã!´!    é!´!       é!´!   vhostsã!´!é!´!   permissionsã!´!    ç!´!       B  ﬂ  Ø  ◊  Ø  ó   &      ˇˇˇˇ        5ûç!´!       B  ’  y  Õ  y  °   "      ˇˇˇˇ        5ûç!´!       B  û  N  ñ  N  ®   "      ˇˇˇˇ        5ûé!´!       é!´!	   sortã!´!    é!´!       é!´!	   pathã!´!é!´!   optionsã!´!    é!´!       é!´!   usersã!´!é!´!   permissionsã!´!    ç!´!       B          ≥   %      ˇˇˇˇ        5ûç!´!       B  >  ¥  6  ¥  π   %      ˇˇˇˇ        5ûç!´!       B  ﬂ  ]  ◊  ]  æ   (      ˇˇˇˇ        5ûç!´!       B  Å    y    √   !      ˇˇˇˇ        5ûç!´!       B  -  ∞  %  ∞  …   '      ˇˇˇˇ        5ûç!´!       B  ⁄  `  “  `  Œ   '      ˇˇˇˇ        5ûé!´!       é!´!   policiesã!´!é!´!   vhostsã!´!    ç!´!       B     ∑  ¯  ∑  ’   /      ˇˇˇˇ        5ûç!´!       B  ﬁ  U   ÷  U   ⁄   $      ˇˇˇˇ        5ûç!´!       B  |   !  t   !  ﬁ   $      ˇˇˇˇ        5ûç!´!       B  ,!  Â!  $!  Â!  ‰   "       ˇˇˇˇ        5ûç!´!       B  "  ]"  "  ]"  Î   ,       ˇˇˇˇ        5ûç!´!       B  à"  Ω"  Ä"  Ω"  Ó   (      ˇˇˇˇ        5ûç!´!       B  Í"  !#  ‚"  !#  Ò   *      ˇˇˇˇ        5ûç!´!       B  E#  ß#  =#  ß#  Ù   !      ˇˇˇˇ        5ûç!´!       B  –#  8$  »#  8$  ˘   &      ˇˇˇˇ        5ûöò;¯2   ı  .                î    } Ç    W   Qà   ∏    
+=   Ç   Á Qà   ∏    
+=   ö   Á QV   =   [   =   ]   =   Á Qà   ∏   
+=   Ç   Á Qà   ∏    
+=	   Ç   Á Qà   ∏    
+=
+   Ç   Á Qà   ∏    
+=   Ç   Á Qà   ∏   
+=
+   Ç   Á Qà   ∏    
+=   Ç   Á Qà   ∏    
+=   Ç	   Á Qà   ∏    
+=   Ç
+   Á Qà   ∏    
+=   Ç   Á Qà   ∏   
+=   Ç   Á Qà   ∏   
+=   Ç   Á Qà   ∏   
+=   Ç   Á Qà   ∏    
+=   Ç   Á Qà   ∏    
+=   Ç   Á Qà   ∏   
+=   Ç   Á Qà   ∏   
+=   Ç   Á Qà   ∏   
+=   Ç   Á Qà   ∏   
+=   Ç   Á Qà   ∏   
+=   Ç   Á Qà   ∏   
+=   Ç   Á QV   =   [   [   =   ]   [   C]   ]   ]   =   ]   =   Á Qà   ∏    
+=    Ç   Á Qà   ∏   
+=   Ç   Á Qà   ∏   
+=   Ç   Á QV   =!   [   [   ="   ]   [   C]   ]   ]#   =   ]   =#   Á Qà   ∏    
+=$   Ç    Á Qà   ∏   
+=%   Ç!   Á Qà   ∏   
+=&   Ç"   Á Qà   ∏   
+=!   Ç#   Á Qà   ∏   
+='   Ç$   Á Qà   ∏   
+='   Ç%   Á QV   =(   [&   =)   ]*   =   ]   =*   Á Qà   ∏    
+=+   Ç'   Á Qà   ∏   
+=(   Ç(   Á Qà   ∏   
+=(   Ç)   Á Qà   ∏   
+=,   Ç*   Á Qà   ∏    
+=-   Ç+   Á Qà   ∏   
+=.   Ç,   Á Qà   ∏   
+=/   Ç-   Á Qà   ∏   
+=0   Ç.   Á Qà   ∏   
+=1   Ç/   Á Qô ®ò∏∞÷ò∞¨ò∏∞÷ò∞¨ò∏∞œòœòˇˇˇË§ò∏∞÷ò∞¨ò∏∞÷ò∞¨#ò∏∞÷ò∞¨(ò∏∞÷ò∞¨/ò∏∞÷ò∞¨:ò∏∞÷ò∞¨>ò∏∞÷ò∞¨Eò∏∞÷ò∞¨Jò∏∞÷ò∞¨Rò∏∞÷ò∞¨Wò∏∞÷ò∞¨\ò∏∞÷ò∞¨aò∏∞÷ò∞¨fò∏∞÷ò∞¨lò∏∞÷ò∞¨qò∏∞÷ò∞¨~ò∏∞÷ò∞§†††ò∏∞÷ò∞¨Ä  âò∏∞÷ò∞¨Ä  éò∏∞÷ò∞¨Ä  îò∏∞œòù †ò"ù
+–†òœ®Ä  îò§††ò∏∞÷ò∞¨Ä  °ò∏∞÷ò∞¨Ä  ®ò∏∞÷ò∞¨Ä  ∞ò∏∞œòù
+ †òù
+–†òœ®Ä  ∞ò§††ò∏∞÷ò∞¨Ä  πò∏∞÷ò∞¨Ä  æò∏∞÷ò∞¨Ä  √ò∏∞÷ò∞¨Ä  …ò∏∞÷ò∞¨Ä  Œò∏∞÷ò∞¨Ä  ”ò∏∞œò †òœ®Ä  ”ò§†ò∏∞÷ò∞¨Ä  ⁄ò∏∞÷ò∞§†††ò∏∞÷ò∞¨Ä  ‰ò∏∞÷ò∞¨Ä  Îò∏∞÷ò∞§††ò∏∞÷ò∞§††ò∏∞÷ò∞§††ò∏∞÷ò∞¨Ä  ˘ò∏∞÷ò∞¨Ä  ˛∞    get   #/7   #/login/:username/:password   login_route   #/cluster-name   /cluster-name   cluster_name   cluster-name   put   #/nodes/:name   #/connections'   #/connections/:name   del   #/channels!   #/channels/:name   #/exchanges1   #/exchanges/:vhost/:name	   post'   #/exchanges/publish   #/queues+   #/queues/:vhost/:name   #/queues/get!   #/queues/actions   #/bindings   #/vhosts   /vhosts	   path	   sort   options   vhosts   /permissions   permissions   #/vhosts/:id   #/users   /users   users   #/users/:id   #/users-add   #/users-modify   #/permissions   #/policies   /policies   policies+   #/policies/:vhost/:id   #/logout%   #/import-succeeded   #/rate-options!   #/column-options   #/reset   #/reset_node 5ûöò;¯      
+                        ö    ù    Ç    Á Qô∏∞”®Ä  ˇ∞    dispatcher_addy›—}Ù      ^UƒX^UƒXAeÆû^U∆I   (    :http://localhost:15672/js/dispatcher.js strongly-framed 1 request-method GET response-head HTTP/1.1 200 OK
+content-length: 9279
+content-type: application/javascript
+etag: "1864098711"
+last-modified: Tue, 25 Feb 2020 23:42:19 GMT
+date: Wed, 26 Feb 2020 01:05:27 GMT
+server: Cowboy
+ original-response-headers server: Cowboy
+date: Tue, 25 Feb 2020 23:48:13 GMT
+content-length: 9279
+content-type: application/javascript
+etag: "1864098711"
+last-modified: Tue, 25 Feb 2020 23:42:19 GMT
+ ctid 2 uncompressed-len 0 necko:classified 1 alt-data 1;9279,javascript/moz-bytecode-20190718161435 alt-data-from-child 1   Ö

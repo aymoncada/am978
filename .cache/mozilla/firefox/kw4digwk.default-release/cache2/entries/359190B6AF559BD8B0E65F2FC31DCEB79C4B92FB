@@ -1,0 +1,1293 @@
+///////////////////////
+//                   //
+// Genuine constants //
+//                   //
+///////////////////////
+
+// Just used below
+function map(list) {
+    var res = {};
+    for (i in list) {
+        res[list[i]] = '';
+    }
+    return res;
+}
+
+// Extension arguments that we know about and present specially in the UI.
+var KNOWN_ARGS = {'alternate-exchange':        {'short': 'AE',  'type': 'string'},
+                  'x-message-ttl':             {'short': 'TTL', 'type': 'int'},
+                  'x-expires':                 {'short': 'Exp', 'type': 'int'},
+                  'x-max-length':              {'short': 'Lim', 'type': 'int'},
+                  'x-max-length-bytes':        {'short': 'Lim B', 'type': 'int'},
+                  'x-dead-letter-exchange':    {'short': 'DLX', 'type': 'string'},
+                  'x-dead-letter-routing-key': {'short': 'DLK', 'type': 'string'},
+                  'x-queue-master-locator':    {'short': 'ML', 'type': 'string'},
+                  'x-max-priority':            {'short': 'Pri', 'type': 'int'}};
+
+// Things that are like arguments that we format the same way in listings.
+var IMPLICIT_ARGS = {'durable':         {'short': 'D',    'type': 'boolean'},
+                     'auto-delete':     {'short': 'AD',   'type': 'boolean'},
+                     'exclusive':       {'short': 'Excl', 'type': 'boolean'},
+                     'internal':        {'short': 'I',    'type': 'boolean'}};
+
+// Both the above
+var ALL_ARGS = {};
+for (var k in IMPLICIT_ARGS) ALL_ARGS[k] = IMPLICIT_ARGS[k];
+for (var k in KNOWN_ARGS)    ALL_ARGS[k] = KNOWN_ARGS[k];
+
+var NAVIGATION = {'Overview':    ['#/',            "management"],
+                  'Connections': ['#/connections', "management"],
+                  'Channels':    ['#/channels',    "management"],
+                  'Exchanges':   ['#/exchanges',   "management"],
+                  'Queues':      ['#/queues',      "management"],
+                  'Admin':
+                    [{'Users':         ['#/users',              "administrator"],
+                      'Virtual Hosts': ['#/vhosts',             "administrator"],
+                      'Policies':      ['#/policies',           "management"],
+                      'Cluster':       ['#/cluster-name',       "administrator"]},
+                     "management"]
+                 };
+
+var CHART_PERIODS = {'60|5':       'Last minute',
+                     '600|5':      'Last ten minutes',
+                     '3600|60':    'Last hour',
+                     '28800|600':  'Last eight hours',
+                     '86400|1800': 'Last day'};
+
+var COLUMNS =
+    {'exchanges' :
+     {'Overview': [['type',                 'Type',                   true],
+                   ['features',             'Features (with policy)', true],
+                   ['features_no_policy',   'Features (no policy)',   false],
+                   ['policy',               'Policy',                 false]],
+      'Message rates': [['rate-in',         'rate in',                true],
+                        ['rate-out',        'rate out',               true]]},
+     'queues' :
+     {'Overview': [['features',             'Features (with policy)', true],
+                   ['features_no_policy',   'Features (no policy)',   false],
+                   ['policy',               'Policy',                 false],
+                   ['consumers',            'Consumer count',         false],
+                   ['consumer_utilisation', 'Consumer utilisation',   false],
+                   ['state',                'State',                  true]],
+      'Messages': [['msgs-ready',      'Ready',          true],
+                   ['msgs-unacked',    'Unacknowledged', true],
+                   ['msgs-ram',        'In memory',      false],
+                   ['msgs-persistent', 'Persistent',     false],
+                   ['msgs-total',      'Total',          true]],
+      'Message bytes': [['msg-bytes-ready',      'Ready',          false],
+                        ['msg-bytes-unacked',    'Unacknowledged', false],
+                        ['msg-bytes-ram',        'In memory',      false],
+                        ['msg-bytes-persistent', 'Persistent',     false],
+                        ['msg-bytes-total',      'Total',          false]],
+      'Message rates': [['rate-incoming',  'incoming',      true],
+                        ['rate-deliver',   'deliver / get', true],
+                        ['rate-redeliver', 'redelivered',   false],
+                        ['rate-ack',       'ack',           true]]},
+     'channels' :
+     {'Overview': [['user',  'User name', true],
+                   ['mode',  'Mode',      true],
+                   ['state', 'State',     true]],
+      'Details': [['msgs-unconfirmed', 'Unconfirmed', true],
+                  ['prefetch',         'Prefetch',    true],
+                  ['msgs-unacked',     'Unacked',     true]],
+      'Transactions': [['msgs-uncommitted', 'Msgs uncommitted', false],
+                       ['acks-uncommitted', 'Acks uncommitted', false]],
+      'Message rates': [['rate-publish',   'publish',            true],
+                        ['rate-confirm',   'confirm',            true],
+                        ['rate-return',    'return (mandatory)', false],
+                        ['rate-deliver',   'deliver / get',      true],
+                        ['rate-redeliver', 'redelivered',        false],
+                        ['rate-ack',       'ack',                true]]},
+     'connections':
+     {'Overview': [['user',   'User name', true],
+                   ['state',  'State',     true]],
+      'Details': [['ssl',            'SSL / TLS',      true],
+                  ['ssl_info',       'SSL Details',    false],
+                  ['protocol',       'Protocol',       true],
+                  ['channels',       'Channels',       true],
+                  ['channel_max',    'Channel max',    false],
+                  ['frame_max',      'Frame max',      false],
+                  ['auth_mechanism', 'Auth mechanism', false],
+                  ['client',         'Client',         false]],
+      'Network': [['from_client',  'From client',  true],
+                  ['to_client',    'To client',    true],
+                  ['heartbeat',    'Heartbeat',    false],
+                  ['connected_at', 'Connected at', false]]},
+
+     'vhosts':
+     {'Messages': [['msgs-ready',      'Ready',          true],
+                   ['msgs-unacked',    'Unacknowledged', true],
+                   ['msgs-total',      'Total',          true]],
+      'Network': [['from_client',  'From client',  true],
+                  ['to_client',    'To client',    true]],
+      'Message rates': [['rate-publish', 'publish',       true],
+                        ['rate-deliver', 'deliver / get', true]]},
+     'overview':
+     {'Statistics': [['file_descriptors',   'File descriptors',   true],
+                     ['socket_descriptors', 'Socket descriptors', true],
+                     ['erlang_processes',   'Erlang processes',   true],
+                     ['memory',             'Memory',             true],
+                     ['disk_space',         'Disk space',         true]],
+      'General': [['uptime',    'Uptime',       true],
+                  ['info',      'Info',         true],
+                  ['reset_stats',     'Reset stats',        true]]}};
+
+// All help ? popups
+var HELP = {
+    'exchange-auto-delete':
+      'If yes, the exchange will delete itself after at least one queue or exchange has been bound to this one, and then all queues or exchanges have been unbound.',
+
+    'exchange-internal':
+      'If yes, clients cannot publish to this exchange directly. It can only be used with exchange to exchange bindings.',
+
+    'exchange-alternate':
+      'If messages to this exchange cannot otherwise be routed, send them to the alternate exchange named here.<br/>(Sets the "<a target="_blank" href="http://rabbitmq.com/ae.html">alternate-exchange</a>" argument.)',
+
+    'queue-message-ttl':
+    'How long a message published to a queue can live before it is discarded (milliseconds).<br/>(Sets the "<a target="_blank" href="http://rabbitmq.com/ttl.html#per-queue-message-ttl">x-message-ttl</a>" argument.)',
+
+    'queue-expires':
+      'How long a queue can be unused for before it is automatically deleted (milliseconds).<br/>(Sets the "<a target="_blank" href="http://rabbitmq.com/ttl.html#queue-ttl">x-expires</a>" argument.)',
+
+    'queue-max-length':
+      'How many (ready) messages a queue can contain before it starts to drop them from its head.<br/>(Sets the "<a target="_blank" href="http://rabbitmq.com/maxlength.html">x-max-length</a>" argument.)',
+
+    'queue-max-length-bytes':
+      'Total body size for ready messages a queue can contain before it starts to drop them from its head.<br/>(Sets the "<a target="_blank" href="http://rabbitmq.com/maxlength.html">x-max-length-bytes</a>" argument.)',
+
+    'queue-auto-delete':
+      'If yes, the queue will delete itself after at least one consumer has connected, and then all consumers have disconnected.',
+
+    'queue-dead-letter-exchange':
+      'Optional name of an exchange to which messages will be republished if they are rejected or expire.<br/>(Sets the "<a target="_blank" href="http://rabbitmq.com/dlx.html">x-dead-letter-exchange</a>" argument.)',
+
+    'queue-dead-letter-routing-key':
+      'Optional replacement routing key to use when a message is dead-lettered. If this is not set, the message\'s original routing key will be used.<br/>(Sets the "<a target="_blank" href="http://rabbitmq.com/dlx.html">x-dead-letter-routing-key</a>" argument.)',
+
+    'queue-max-priority':
+      'Maximum number of priority levels for the queue to support; if not set, the queue will not support message priorities.<br/>(Sets the "<a target="_blank" href="http://rabbitmq.com/priority.html">x-max-priority</a>" argument.)',
+
+    'queue-lazy':
+      'Set the queue into lazy mode, keeping as many messages as possible on disk to reduce RAM usage; if not set, the queue will keep an in-memory cache to deliver messages as fast as possible.<br/>(Sets the "<a target="_blank" href="https://www.rabbitmq.com/lazy-queues.html">x-queue-mode</a>" argument.)',
+
+    'queue-master-locator':
+       'Set the queue into master location mode, determining the rule by which the queue master is located when declared on a cluster of nodes.<br/>(Sets the "<a target="_blank" href="https://www.rabbitmq.com/ha.html">x-queue-master-locator</a>" argument.)',
+
+    'queue-messages':
+      '<p>Message counts.</p><p>Note that "in memory" and "persistent" are not mutually exclusive; persistent messages can be in memory as well as on disc, and transient messages can be paged out if memory is tight. Non-durable queues will consider all messages to be transient.</p>',
+
+    'queue-message-body-bytes':
+      '<p>The sum total of the sizes of the message bodies in this queue. This only counts message bodies; it does not include message properties (including headers) or metadata used by the queue.</p><p>Note that "in memory" and "persistent" are not mutually exclusive; persistent messages can be in memory as well as on disc, and transient messages can be paged out if memory is tight. Non-durable queues will consider all messages to be transient.</p><p>If a message is routed to multiple queues on publication, its body will be stored only once (in memory and on disk) and shared between queues. The value shown here does not take account of this effect.</p>',
+
+    'queue-process-memory':
+      'Total memory used by this queue process. This does not include in-memory message bodies (which may be shared between queues and will appear in the global "binaries" memory) but does include everything else.',
+
+    'queue-consumer-utilisation':
+      'Fraction of the time that the queue is able to immediately deliver messages to consumers. If this number is less than 100% you may be able to deliver messages faster if: \
+        <ul> \
+          <li>There were more consumers or</li> \
+          <li>The consumers were faster or</li> \
+          <li>The consumers had a higher prefetch count</li> \
+        </ul>',
+
+    'internal-users-only':
+      'Only users within the internal RabbitMQ database are shown here. Other users (e.g. those authenticated over LDAP) will not appear.',
+
+    'export-definitions':
+    'The definitions consist of users, virtual hosts, permissions, parameters, exchanges, queues and bindings. They do not include the contents of queues or the cluster name. Exclusive queues will not be exported.',
+
+    'export-definitions-vhost':
+    'The definitions exported for a single virtual host consist of exchanges, queues, bindings and policies.',
+
+    'import-definitions':
+      'The definitions that are imported will be merged with the current definitions. If an error occurs during import, any changes made will not be rolled back.',
+
+    'import-definitions-vhost':
+    'For a single virtual host, only exchanges, queues, bindings and policies are imported.',
+
+    'exchange-rates-incoming':
+      'The incoming rate is the rate at which messages are published directly to this exchange.',
+
+    'exchange-rates-outgoing':
+      'The outgoing rate is the rate at which messages enter queues, having been published directly to this exchange.',
+
+    'channel-mode':
+      'Channel guarantee mode. Can be one of the following, or neither:<br/> \
+      <dl> \
+        <dt><abbr title="Confirm">C</abbr> &ndash; <a target="_blank" href="http://www.rabbitmq.com/confirms.html">confirm</a></dt> \
+        <dd>Channel will send streaming publish confirmations.</dd> \
+        <dt><abbr title="Transactional">T</abbr> &ndash; <a target="_blank" href="http://www.rabbitmq.com/amqp-0-9-1-reference.html#class.tx">transactional</a></dt> \
+        <dd>Channel is transactional.</dd> \
+      </dl>',
+
+    'channel-prefetch':
+      'Channel prefetch counts. \
+       <p> \
+         Each channel can have two prefetch counts: A per-consumer count, which \
+         will limit each new consumer created on the channel, and a global \
+         count, which is shared between all consumers on the channel.\
+       </p> \
+       <p> \
+         This column shows one, the other, or both limits if they are set. \
+       </p>',
+
+    'file-descriptors':
+      '<p>File descriptor count and limit, as reported by the operating \
+      system. The count includes network sockets and file handles.</p> \
+      <p>To optimize disk access RabbitMQ uses as many free descriptors as are \
+      available, so the count may safely approach the limit. \
+      However, if most of the file descriptors are used by sockets then \
+      persister performance will be negatively impacted.</p> \
+      <p>To change the limit on Unix / Linux, use "ulimit -n". To change \
+      the limit on Windows, set the ERL_MAX_PORTS environment variable</p> \
+      <p>To report used file handles on Windows, handle.exe from \
+      sysinternals must be installed in your path. You can download it \
+      <a target="_blank" href="http://technet.microsoft.com/en-us/sysinternals/bb896655">here</a>.</p>',
+
+    'socket-descriptors':
+      'The network sockets count and limit managed by RabbitMQ.<br/> \
+      When the limit is exhausted RabbitMQ will stop accepting new \
+      network connections.',
+
+    'memory-alarm':
+      '<p>The <a target="_blank" href="http://www.rabbitmq.com/memory.html#memsup">memory \
+      alarm</a> for this node has gone off. It will block \
+      incoming network traffic until the memory usage drops below \
+      the watermark.</p>\
+      <p>Note that the pale line in this case indicates the high watermark \
+      in relation to how much memory is used in total. </p>',
+
+    'disk-free-alarm':
+      'The <a target="_blank" href="http://www.rabbitmq.com/memory.html#diskfreesup">disk \
+      free space alarm</a> for this node has gone off. It will block \
+      incoming network traffic until the amount of free space exceeds \
+      the limit.',
+
+    'message-get-requeue':
+      '<p>Clicking "Get Message(s)" will consume messages from the queue. \
+      If requeue is set the message will be put back into the queue in place, \
+      but "redelivered" will be set on the message.</p> \
+      <p>If requeue is not set messages will be removed from the queue.</p> \
+      <p>Furthermore, message payloads will be truncated to 50000 bytes.</p>',
+
+    'message-publish-headers':
+      'Headers can have any name. Only long string headers can be set here.',
+
+    'message-publish-properties':
+      '<p>You can set other message properties here (delivery mode and headers \
+      are pulled out as the most common cases).</p>\
+      <p>Invalid properties will be ignored. Valid properties are:</p>\
+      <ul>\
+      <li>content_type</li>\
+      <li>content_encoding</li>\
+      <li>priority</li>\
+      <li>correlation_id</li>\
+      <li>reply_to</li>\
+      <li>expiration</li>\
+      <li>message_id</li>\
+      <li>timestamp</li>\
+      <li>type</li>\
+      <li>user_id</li>\
+      <li>app_id</li>\
+      <li>cluster_id</li>\
+      </ul>',
+
+    'string-base64':
+    '<p>AMQP message payloads can contain any binary content. They can \
+     therefore be difficult to display in a browser. The options here \
+     have the following meanings:</p> \
+     <dl> \
+       <dt>Auto string / base64</dt> \
+       <dd>If the message payload can be interpreted as a string in UTF-8 \
+           encoding, do so. Otherwise return the payload encoded as \
+           base64.</dd> \
+       <dt>base64</dt> \
+       <dd>Return the payload encoded as base64 unconditionally.</dd> \
+     </dl>',
+
+    'user-tags':
+      'Comma-separated list of tags to apply to the user. Currently \
+       <a target="_blank" href="http://www.rabbitmq.com/management.html#permissions">supported \
+       by the management plugin</a>: \
+      <dl> \
+        <dt>management</dt> \
+        <dd> \
+          User can access the management plugin \
+        </dd> \
+        <dt>policymaker</dt> \
+        <dd> \
+          User can access the management plugin and manage policies and \
+          parameters for the vhosts they have access to. \
+        </dd> \
+        <dt>monitoring</dt> \
+        <dd> \
+          User can access the management plugin and see all connections and \
+          channels as well as node-related information. \
+        </dd> \
+        <dt>administrator</dt> \
+        <dd> \
+          User can do everything monitoring can do, manage users, \
+          vhosts and permissions, close other user\'s connections, and manage \
+          policies and parameters for all vhosts. \
+        </dd> \
+      </dl> \
+      <p> \
+        Note that you can set any tag here; the links for the above four \
+        tags are just for convenience. \
+      </p>',
+
+    'queued-messages':
+      '<dl>                          \
+        <dt>Ready</dt>\
+        <dd>Number of messages that are available to be delivered now.</dd>\
+        <dt>Unacknowledged</dt>\
+        <dd>Number of messages for which the server is waiting for acknowledgement.</dd>\
+        <dt>Total</dt>\
+        <dd>The total of these two numbers.</dd>\
+      </dl>',
+
+    'message-rates':
+    'Only rates for which some activity is taking place will be shown.\
+      <dl>\
+        <dt>Publish</dt>\
+        <dd>Rate at which messages are entering the server.</dd>\
+        <dt>Publisher confirm</dt>\
+        <dd>Rate at which the server is confirming publishes.</dd>\
+        <dt>Deliver (manual ack)</dt>\
+        <dd>Rate at which messages are delivered to consumers that use manual acknowledgements.</dd>\
+        <dt>Deliver (auto ack)</dt>\
+        <dd>Rate at which messages are delivered to consumers that use automatic acknowledgements.</dd>\
+        <dt>Consumer ack</dt>\
+        <dd>Rate at which messages are being acknowledged by consumers.</dd>\
+        <dt>Redelivered</dt>\
+        <dd>Rate at which messages with the \'redelivered\' flag set are being delivered. Note that these messages will <b>also</b> be counted in one of the delivery rates above.</dd>\
+        <dt>Get (manual ack)</dt>\
+        <dd>Rate at which messages requiring acknowledgement are being delivered in response to basic.get.</dd>\
+        <dt>Get (auto ack)</dt>\
+        <dd>Rate at which messages not requiring acknowledgement are being delivered in response to basic.get.</dd>\
+        <dt>Return</dt>\
+        <dd>Rate at which basic.return is sent to publishers for unroutable messages published with the \'mandatory\' flag set.</dd>\
+        <dt>Disk read</dt>\
+        <dd>Rate at which queues read messages from disk.</dd>\
+        <dt>Disk write</dt>\
+        <dd>Rate at which queues write messages to disk.</dd>\
+      </dl>\
+      <p>\
+        Note that the last two items are originate in queues rather than \
+        channels; they may therefore be slightly out of sync with other \
+        statistics.\
+      </p>',
+
+    'disk-monitoring-no-watermark' : 'There is no <a target="_blank" href="http://www.rabbitmq.com/memory.html#diskfreesup">disk space low watermark</a> set. RabbitMQ will not take any action to avoid running out of disk space.',
+
+    'resource-counts' : 'Shows total number of objects for all virtual hosts the current user has access to.',
+
+    'memory-use' : '<p>Note that the memory details shown here are only updated on request - they could be too expensive to calculate every few seconds on a busy server.</p><p><a target="_blank" href="http://www.rabbitmq.com/memory-use.html">Read more</a> on memory use.</p>',
+
+    'binary-use' : '<p>Binary accounting is not exact; binaries are shared between processes (and thus the same binary might be counted in more than one section), and the VM does not allow us to track binaries that are not associated with processes (so some binary use might not appear at all).</p>',
+
+    'policy-ha-mode' : 'One of <code>all</code> (mirror to all nodes in the cluster), <code>exactly</code> (mirror to a set number of nodes) or <code>nodes</code> (mirror to an explicit list of nodes). If you choose one of the latter two, you must also set <code>ha-params</code>.',
+
+    'policy-ha-params' : 'Absent if <code>ha-mode</code> is <code>all</code>, a number\
+    if <code>ha-mode</code> is <code>exactly</code>, or a list\
+    of strings if <code>ha-mode</code> is <code>nodes</code>.',
+
+    'policy-ha-sync-mode' : 'One of <code>manual</code> or <code>automatic</code>.',
+
+    'policy-federation-upstream-set' :
+    'A string; only if the federation plugin is enabled. Chooses the name of a set of upstreams to use with federation, or "all" to use all upstreams. Incompatible with <code>federation-upstream</code>.',
+
+    'policy-federation-upstream' :
+    'A string; only if the federation plugin is enabled. Chooses a specific upstream set to use for federation. Incompatible with <code>federation-upstream-set</code>.',
+
+    'handle-exe' : 'In order to monitor the number of file descriptors in use on Windows, RabbitMQ needs the <a href="http://technet.microsoft.com/en-us/sysinternals/bb896655" target="_blank">handle.exe command line tool from Microsoft</a>. Download it and place it in the path (e.g. in C:\Windows).',
+
+    'filter-regex' :
+    'Whether to enable regular expression matching. Both string literals \
+    and regular expressions are matched in a case-insensitive manner.<br/></br/> \
+    (<a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Regular_Expressions" target="_blank">Regular expression reference</a>)',
+
+    'plugins' :
+    'Note that only plugins which are both explicitly enabled and running are shown here.',
+
+    'io-operations':
+    'Rate of I/O operations. Only operations performed by the message \
+      persister are shown here (e.g. metadata changes in Mnesia or writes \
+      to the log files are not shown).\
+      <dl>\
+        <dt>Read</dt>\
+        <dd>Rate at which data is read from the disk.</dd>\
+        <dt>Write</dt>\
+        <dd>Rate at which data is written to the disk.</dd>\
+        <dt>Seek</dt>\
+        <dd>Rate at which the broker switches position while reading or \
+         writing to disk.</dd>\
+        <dt>Sync</dt>\
+        <dd>Rate at which the broker invokes <code>fsync()</code> to ensure \
+         data is flushed to disk.</dd>\
+        <dt>Reopen</dt>\
+        <dd>Rate at which the broker recycles file handles in order to support \
+         more queues than it has file handles. If this operation is occurring \
+         frequently you may get a performance boost from increasing the number \
+         of file handles available.</dd>\
+      </dl>',
+
+    'mnesia-transactions':
+    'Rate at which Mnesia transactions are initiated on this node (this node \
+     will also take part in Mnesia transactions initiated on other nodes).\
+      <dl>\
+        <dt>RAM only</dt>\
+        <dd>Rate at which RAM-only transactions take place (e.g. creation / \
+            deletion of transient queues).</dd>\
+        <dt>Disk</dt>\
+        <dd>Rate at which disk (and RAM) transactions take place (.e.g \
+            creation / deletion of durable queues).</dd>\
+      </dl>',
+
+    'persister-operations-msg':
+    'Rate at which per-message persister operations take place on this node. See \
+     <a href="http://www.rabbitmq.com/persistence-conf.html" target="_blank">here</a> \
+     for more information on the persister. \
+      <dl>\
+        <dt>QI Journal</dt>\
+        <dd>Rate at which message information (publishes, deliveries and \
+            acknowledgements) is written to queue index journals.</dd>\
+        <dt>Store Read</dt>\
+        <dd>Rate at which messages are read from the message store.</dd>\
+        <dt>Store Write</dt>\
+        <dd>Rate at which messages are written to the message store.</dd>\
+      </dl>',
+
+    'persister-operations-bulk':
+    'Rate at which whole-file persister operations take place on this node. See \
+     <a href="http://www.rabbitmq.com/persistence-conf.html" target="_blank">here</a> \
+     for more information on the persister. \
+      <dl>\
+        <dt>QI Read</dt>\
+        <dd>Rate at which queue index segment files are read.</dd>\
+        <dt>QI Write</dt>\
+        <dd>Rate at which queue index segment files are written. </dd>\
+      </dl>',
+
+    'gc-operations':
+    'Rate at which garbage collection operations take place on this node.',
+
+    'gc-bytes':
+    'Rate at which memory is reclaimed by the garbage collector on this node.',
+
+    'context-switches-operations':
+    'Rate at which runtime context switching takes place on this node.',
+
+    'process-reductions':
+    'Rate at which reductions take place on this process.'
+};
+
+///////////////////////////////////////////////////////////////////////////
+//                                                                       //
+// Mostly constant, typically get set once at startup (or rarely anyway) //
+//                                                                       //
+///////////////////////////////////////////////////////////////////////////
+
+// All these are to do with hiding UI elements if
+var rates_mode;                  // ...there are no fine stats
+var user_administrator;          // ...user is not an admin
+var is_user_policymaker;         // ...user is not a policymaker
+var user_monitor;                // ...user cannot monitor
+var nodes_interesting;           // ...we are not in a cluster
+var vhosts_interesting;          // ...there is only one vhost
+var rabbit_versions_interesting; // ...all cluster nodes run the same version
+
+// Extensions write to this, the dispatcher maker reads it
+var dispatcher_modules = [];
+
+// We need to know when all extension script files have loaded
+var extension_count;
+
+// The dispatcher needs access to the Sammy app
+var app;
+
+// Used for the new exchange form, and to display broken exchange types
+var exchange_types;
+
+// Used for access control
+var user_tags;
+var user;
+
+// Set up the above vars
+function setup_global_vars() {
+    var overview = JSON.parse(sync_get('/overview'));
+    rates_mode = overview.rates_mode;
+    user_tags = expand_user_tags(user.tags.split(","));
+    user_administrator = jQuery.inArray("administrator", user_tags) != -1;
+    is_user_policymaker = jQuery.inArray("policymaker", user_tags) != -1;
+    user_monitor = jQuery.inArray("monitoring", user_tags) != -1;
+    exchange_types = overview.exchange_types.map(function(xt) { return xt.name; });
+
+    cluster_name = fmt_escape_html(overview.cluster_name);
+    $('#logout').before(
+      '<li>Cluster ' + (user_administrator ?  '<a href="#/cluster-name">' + cluster_name + '</a>' : cluster_name) + '</li>'
+    );
+
+    user_name = fmt_escape_html(user.name);
+    $('#header #logout').prepend(
+      'User ' + (user_administrator ?  '<a href="#/users/' + user_name + '">' + user_name + '</a>' : user_name)
+    );
+
+    $('#versions').html(
+      '<abbr title="Available exchange types: ' + exchange_types.join(", ") + '">' + fmt_escape_html(overview.rabbitmq_version) + '</abbr>' +
+      '<abbr title="' + fmt_escape_html(overview.erlang_full_version) + '">Erlang ' + fmt_escape_html(overview.erlang_version) + '</abbr>'
+    );
+    nodes_interesting = false;
+    rabbit_versions_interesting = false;
+    if (user_monitor) {
+        var nodes = JSON.parse(sync_get('/nodes'));
+        if (nodes.length > 1) {
+            nodes_interesting = true;
+            var v = '';
+            for (var i = 0; i < nodes.length; i++) {
+                var v1 = fmt_rabbit_version(nodes[i].applications);
+                if (v1 != 'unknown') {
+                    if (v != '' && v != v1) rabbit_versions_interesting = true;
+                    v = v1;
+                }
+            }
+        }
+    }
+    vhosts_interesting = JSON.parse(sync_get('/vhosts')).length > 1;
+    current_vhost = get_pref('vhost');
+    exchange_types = overview.exchange_types;
+}
+
+function expand_user_tags(tags) {
+    var new_tags = [];
+    for (var i = 0; i < tags.length; i++) {
+        var tag = tags[i];
+        new_tags.push(tag);
+        switch (tag) { // Note deliberate fall-through
+            case "administrator": new_tags.push("monitoring");
+                                  new_tags.push("policymaker");
+            case "monitoring":    new_tags.push("management");
+                                  break;
+            case "policymaker":   new_tags.push("management");
+            default:              break;
+        }
+    }
+    return new_tags;
+}
+
+////////////////////////////////////////////////////
+//                                                //
+// Change frequently (typically every "new page") //
+//                                                //
+////////////////////////////////////////////////////
+
+// Which top level template we're showing
+var current_template;
+
+// Which JSON requests do we need to populate it
+var current_reqs;
+
+// And which of those have yet to return (so we can cancel them when
+// changing current_template).
+var outstanding_reqs = [];
+
+// Which tab is highlighted
+var current_highlight;
+
+// Which vhost are we looking at
+var current_vhost = '';
+
+// What is our current sort order
+var current_sort;
+var current_sort_reverse = false;
+
+var current_filter = '';
+var current_filter_regex_on = false;
+
+var current_filter_regex;
+var current_truncate;
+
+// The timer object for auto-updates, and how often it goes off
+var timer;
+var timer_interval;
+
+// When did we last connect successfully (for the "could not connect" error)
+var last_successful_connect;
+
+// Every 200 updates without user interaction we do a full refresh, to
+// work around memory leaks in browser DOM implementations.
+// TODO: maybe we don't need this any more?
+var update_counter = 0;
+
+// Holds chart data in between writing the div in an ejs and rendering
+// the chart.
+var chart_data = {};
+
+// whenever a UI requests a page that doesn't exist
+// because things were deleted between refreshes
+var last_page_out_of_range_error = 0;
+        20190718161435       Ğ                  Ö|      Ö|    Ö|  / / / / / / / / / / / / / / / / / / / / / / / 
+ / /                                       / / 
+ / /   G e n u i n e   c o n s t a n t s   / / 
+ / /                                       / / 
+ / / / / / / / / / / / / / / / / / / / / / / / 
+ 
+ / /   J u s t   u s e d   b e l o w 
+ f u n c t i o n   m a p ( l i s t )   { 
+         v a r   r e s   =   { } ; 
+         f o r   ( i   i n   l i s t )   { 
+                 r e s [ l i s t [ i ] ]   =   ' ' ; 
+         } 
+         r e t u r n   r e s ; 
+ } 
+ 
+ / /   E x t e n s i o n   a r g u m e n t s   t h a t   w e   k n o w   a b o u t   a n d   p r e s e n t   s p e c i a l l y   i n   t h e   U I . 
+ v a r   K N O W N _ A R G S   =   { ' a l t e r n a t e - e x c h a n g e ' :                 { ' s h o r t ' :   ' A E ' ,     ' t y p e ' :   ' s t r i n g ' } , 
+                                     ' x - m e s s a g e - t t l ' :                           { ' s h o r t ' :   ' T T L ' ,   ' t y p e ' :   ' i n t ' } , 
+                                     ' x - e x p i r e s ' :                                   { ' s h o r t ' :   ' E x p ' ,   ' t y p e ' :   ' i n t ' } , 
+                                     ' x - m a x - l e n g t h ' :                             { ' s h o r t ' :   ' L i m ' ,   ' t y p e ' :   ' i n t ' } , 
+                                     ' x - m a x - l e n g t h - b y t e s ' :                 { ' s h o r t ' :   ' L i m   B ' ,   ' t y p e ' :   ' i n t ' } , 
+                                     ' x - d e a d - l e t t e r - e x c h a n g e ' :         { ' s h o r t ' :   ' D L X ' ,   ' t y p e ' :   ' s t r i n g ' } , 
+                                     ' x - d e a d - l e t t e r - r o u t i n g - k e y ' :   { ' s h o r t ' :   ' D L K ' ,   ' t y p e ' :   ' s t r i n g ' } , 
+                                     ' x - q u e u e - m a s t e r - l o c a t o r ' :         { ' s h o r t ' :   ' M L ' ,   ' t y p e ' :   ' s t r i n g ' } , 
+                                     ' x - m a x - p r i o r i t y ' :                         { ' s h o r t ' :   ' P r i ' ,   ' t y p e ' :   ' i n t ' } } ; 
+ 
+ / /   T h i n g s   t h a t   a r e   l i k e   a r g u m e n t s   t h a t   w e   f o r m a t   t h e   s a m e   w a y   i n   l i s t i n g s . 
+ v a r   I M P L I C I T _ A R G S   =   { ' d u r a b l e ' :                   { ' s h o r t ' :   ' D ' ,         ' t y p e ' :   ' b o o l e a n ' } , 
+                                           ' a u t o - d e l e t e ' :           { ' s h o r t ' :   ' A D ' ,       ' t y p e ' :   ' b o o l e a n ' } , 
+                                           ' e x c l u s i v e ' :               { ' s h o r t ' :   ' E x c l ' ,   ' t y p e ' :   ' b o o l e a n ' } , 
+                                           ' i n t e r n a l ' :                 { ' s h o r t ' :   ' I ' ,         ' t y p e ' :   ' b o o l e a n ' } } ; 
+ 
+ / /   B o t h   t h e   a b o v e 
+ v a r   A L L _ A R G S   =   { } ; 
+ f o r   ( v a r   k   i n   I M P L I C I T _ A R G S )   A L L _ A R G S [ k ]   =   I M P L I C I T _ A R G S [ k ] ; 
+ f o r   ( v a r   k   i n   K N O W N _ A R G S )         A L L _ A R G S [ k ]   =   K N O W N _ A R G S [ k ] ; 
+ 
+ v a r   N A V I G A T I O N   =   { ' O v e r v i e w ' :         [ ' # / ' ,                         " m a n a g e m e n t " ] , 
+                                     ' C o n n e c t i o n s ' :   [ ' # / c o n n e c t i o n s ' ,   " m a n a g e m e n t " ] , 
+                                     ' C h a n n e l s ' :         [ ' # / c h a n n e l s ' ,         " m a n a g e m e n t " ] , 
+                                     ' E x c h a n g e s ' :       [ ' # / e x c h a n g e s ' ,       " m a n a g e m e n t " ] , 
+                                     ' Q u e u e s ' :             [ ' # / q u e u e s ' ,             " m a n a g e m e n t " ] , 
+                                     ' A d m i n ' : 
+                                         [ { ' U s e r s ' :                   [ ' # / u s e r s ' ,                             " a d m i n i s t r a t o r " ] , 
+                                             ' V i r t u a l   H o s t s ' :   [ ' # / v h o s t s ' ,                           " a d m i n i s t r a t o r " ] , 
+                                             ' P o l i c i e s ' :             [ ' # / p o l i c i e s ' ,                       " m a n a g e m e n t " ] , 
+                                             ' C l u s t e r ' :               [ ' # / c l u s t e r - n a m e ' ,               " a d m i n i s t r a t o r " ] } , 
+                                           " m a n a g e m e n t " ] 
+                                   } ; 
+ 
+ v a r   C H A R T _ P E R I O D S   =   { ' 6 0 | 5 ' :               ' L a s t   m i n u t e ' , 
+                                           ' 6 0 0 | 5 ' :             ' L a s t   t e n   m i n u t e s ' , 
+                                           ' 3 6 0 0 | 6 0 ' :         ' L a s t   h o u r ' , 
+                                           ' 2 8 8 0 0 | 6 0 0 ' :     ' L a s t   e i g h t   h o u r s ' , 
+                                           ' 8 6 4 0 0 | 1 8 0 0 ' :   ' L a s t   d a y ' } ; 
+ 
+ v a r   C O L U M N S   = 
+         { ' e x c h a n g e s '   : 
+           { ' O v e r v i e w ' :   [ [ ' t y p e ' ,                                   ' T y p e ' ,                                       t r u e ] , 
+                                       [ ' f e a t u r e s ' ,                           ' F e a t u r e s   ( w i t h   p o l i c y ) ' ,   t r u e ] , 
+                                       [ ' f e a t u r e s _ n o _ p o l i c y ' ,       ' F e a t u r e s   ( n o   p o l i c y ) ' ,       f a l s e ] , 
+                                       [ ' p o l i c y ' ,                               ' P o l i c y ' ,                                   f a l s e ] ] , 
+             ' M e s s a g e   r a t e s ' :   [ [ ' r a t e - i n ' ,                   ' r a t e   i n ' ,                                 t r u e ] , 
+                                                 [ ' r a t e - o u t ' ,                 ' r a t e   o u t ' ,                               t r u e ] ] } , 
+           ' q u e u e s '   : 
+           { ' O v e r v i e w ' :   [ [ ' f e a t u r e s ' ,                           ' F e a t u r e s   ( w i t h   p o l i c y ) ' ,   t r u e ] , 
+                                       [ ' f e a t u r e s _ n o _ p o l i c y ' ,       ' F e a t u r e s   ( n o   p o l i c y ) ' ,       f a l s e ] , 
+                                       [ ' p o l i c y ' ,                               ' P o l i c y ' ,                                   f a l s e ] , 
+                                       [ ' c o n s u m e r s ' ,                         ' C o n s u m e r   c o u n t ' ,                   f a l s e ] , 
+                                       [ ' c o n s u m e r _ u t i l i s a t i o n ' ,   ' C o n s u m e r   u t i l i s a t i o n ' ,       f a l s e ] , 
+                                       [ ' s t a t e ' ,                                 ' S t a t e ' ,                                     t r u e ] ] , 
+             ' M e s s a g e s ' :   [ [ ' m s g s - r e a d y ' ,             ' R e a d y ' ,                     t r u e ] , 
+                                       [ ' m s g s - u n a c k e d ' ,         ' U n a c k n o w l e d g e d ' ,   t r u e ] , 
+                                       [ ' m s g s - r a m ' ,                 ' I n   m e m o r y ' ,             f a l s e ] , 
+                                       [ ' m s g s - p e r s i s t e n t ' ,   ' P e r s i s t e n t ' ,           f a l s e ] , 
+                                       [ ' m s g s - t o t a l ' ,             ' T o t a l ' ,                     t r u e ] ] , 
+             ' M e s s a g e   b y t e s ' :   [ [ ' m s g - b y t e s - r e a d y ' ,             ' R e a d y ' ,                     f a l s e ] , 
+                                                 [ ' m s g - b y t e s - u n a c k e d ' ,         ' U n a c k n o w l e d g e d ' ,   f a l s e ] , 
+                                                 [ ' m s g - b y t e s - r a m ' ,                 ' I n   m e m o r y ' ,             f a l s e ] , 
+                                                 [ ' m s g - b y t e s - p e r s i s t e n t ' ,   ' P e r s i s t e n t ' ,           f a l s e ] , 
+                                                 [ ' m s g - b y t e s - t o t a l ' ,             ' T o t a l ' ,                     f a l s e ] ] , 
+             ' M e s s a g e   r a t e s ' :   [ [ ' r a t e - i n c o m i n g ' ,     ' i n c o m i n g ' ,             t r u e ] , 
+                                                 [ ' r a t e - d e l i v e r ' ,       ' d e l i v e r   /   g e t ' ,   t r u e ] , 
+                                                 [ ' r a t e - r e d e l i v e r ' ,   ' r e d e l i v e r e d ' ,       f a l s e ] , 
+                                                 [ ' r a t e - a c k ' ,               ' a c k ' ,                       t r u e ] ] } , 
+           ' c h a n n e l s '   : 
+           { ' O v e r v i e w ' :   [ [ ' u s e r ' ,     ' U s e r   n a m e ' ,   t r u e ] , 
+                                       [ ' m o d e ' ,     ' M o d e ' ,             t r u e ] , 
+                                       [ ' s t a t e ' ,   ' S t a t e ' ,           t r u e ] ] , 
+             ' D e t a i l s ' :   [ [ ' m s g s - u n c o n f i r m e d ' ,   ' U n c o n f i r m e d ' ,   t r u e ] , 
+                                     [ ' p r e f e t c h ' ,                   ' P r e f e t c h ' ,         t r u e ] , 
+                                     [ ' m s g s - u n a c k e d ' ,           ' U n a c k e d ' ,           t r u e ] ] , 
+             ' T r a n s a c t i o n s ' :   [ [ ' m s g s - u n c o m m i t t e d ' ,   ' M s g s   u n c o m m i t t e d ' ,   f a l s e ] , 
+                                               [ ' a c k s - u n c o m m i t t e d ' ,   ' A c k s   u n c o m m i t t e d ' ,   f a l s e ] ] , 
+             ' M e s s a g e   r a t e s ' :   [ [ ' r a t e - p u b l i s h ' ,       ' p u b l i s h ' ,                         t r u e ] , 
+                                                 [ ' r a t e - c o n f i r m ' ,       ' c o n f i r m ' ,                         t r u e ] , 
+                                                 [ ' r a t e - r e t u r n ' ,         ' r e t u r n   ( m a n d a t o r y ) ' ,   f a l s e ] , 
+                                                 [ ' r a t e - d e l i v e r ' ,       ' d e l i v e r   /   g e t ' ,             t r u e ] , 
+                                                 [ ' r a t e - r e d e l i v e r ' ,   ' r e d e l i v e r e d ' ,                 f a l s e ] , 
+                                                 [ ' r a t e - a c k ' ,               ' a c k ' ,                                 t r u e ] ] } , 
+           ' c o n n e c t i o n s ' : 
+           { ' O v e r v i e w ' :   [ [ ' u s e r ' ,       ' U s e r   n a m e ' ,   t r u e ] , 
+                                       [ ' s t a t e ' ,     ' S t a t e ' ,           t r u e ] ] , 
+             ' D e t a i l s ' :   [ [ ' s s l ' ,                         ' S S L   /   T L S ' ,             t r u e ] , 
+                                     [ ' s s l _ i n f o ' ,               ' S S L   D e t a i l s ' ,         f a l s e ] , 
+                                     [ ' p r o t o c o l ' ,               ' P r o t o c o l ' ,               t r u e ] , 
+                                     [ ' c h a n n e l s ' ,               ' C h a n n e l s ' ,               t r u e ] , 
+                                     [ ' c h a n n e l _ m a x ' ,         ' C h a n n e l   m a x ' ,         f a l s e ] , 
+                                     [ ' f r a m e _ m a x ' ,             ' F r a m e   m a x ' ,             f a l s e ] , 
+                                     [ ' a u t h _ m e c h a n i s m ' ,   ' A u t h   m e c h a n i s m ' ,   f a l s e ] , 
+                                     [ ' c l i e n t ' ,                   ' C l i e n t ' ,                   f a l s e ] ] , 
+             ' N e t w o r k ' :   [ [ ' f r o m _ c l i e n t ' ,     ' F r o m   c l i e n t ' ,     t r u e ] , 
+                                     [ ' t o _ c l i e n t ' ,         ' T o   c l i e n t ' ,         t r u e ] , 
+                                     [ ' h e a r t b e a t ' ,         ' H e a r t b e a t ' ,         f a l s e ] , 
+                                     [ ' c o n n e c t e d _ a t ' ,   ' C o n n e c t e d   a t ' ,   f a l s e ] ] } , 
+ 
+           ' v h o s t s ' : 
+           { ' M e s s a g e s ' :   [ [ ' m s g s - r e a d y ' ,             ' R e a d y ' ,                     t r u e ] , 
+                                       [ ' m s g s - u n a c k e d ' ,         ' U n a c k n o w l e d g e d ' ,   t r u e ] , 
+                                       [ ' m s g s - t o t a l ' ,             ' T o t a l ' ,                     t r u e ] ] , 
+             ' N e t w o r k ' :   [ [ ' f r o m _ c l i e n t ' ,     ' F r o m   c l i e n t ' ,     t r u e ] , 
+                                     [ ' t o _ c l i e n t ' ,         ' T o   c l i e n t ' ,         t r u e ] ] , 
+             ' M e s s a g e   r a t e s ' :   [ [ ' r a t e - p u b l i s h ' ,   ' p u b l i s h ' ,               t r u e ] , 
+                                                 [ ' r a t e - d e l i v e r ' ,   ' d e l i v e r   /   g e t ' ,   t r u e ] ] } , 
+           ' o v e r v i e w ' : 
+           { ' S t a t i s t i c s ' :   [ [ ' f i l e _ d e s c r i p t o r s ' ,       ' F i l e   d e s c r i p t o r s ' ,       t r u e ] , 
+                                           [ ' s o c k e t _ d e s c r i p t o r s ' ,   ' S o c k e t   d e s c r i p t o r s ' ,   t r u e ] , 
+                                           [ ' e r l a n g _ p r o c e s s e s ' ,       ' E r l a n g   p r o c e s s e s ' ,       t r u e ] , 
+                                           [ ' m e m o r y ' ,                           ' M e m o r y ' ,                           t r u e ] , 
+                                           [ ' d i s k _ s p a c e ' ,                   ' D i s k   s p a c e ' ,                   t r u e ] ] , 
+             ' G e n e r a l ' :   [ [ ' u p t i m e ' ,         ' U p t i m e ' ,               t r u e ] , 
+                                     [ ' i n f o ' ,             ' I n f o ' ,                   t r u e ] , 
+                                     [ ' r e s e t _ s t a t s ' ,           ' R e s e t   s t a t s ' ,                 t r u e ] ] } } ; 
+ 
+ / /   A l l   h e l p   ?   p o p u p s 
+ v a r   H E L P   =   { 
+         ' e x c h a n g e - a u t o - d e l e t e ' : 
+             ' I f   y e s ,   t h e   e x c h a n g e   w i l l   d e l e t e   i t s e l f   a f t e r   a t   l e a s t   o n e   q u e u e   o r   e x c h a n g e   h a s   b e e n   b o u n d   t o   t h i s   o n e ,   a n d   t h e n   a l l   q u e u e s   o r   e x c h a n g e s   h a v e   b e e n   u n b o u n d . ' , 
+ 
+         ' e x c h a n g e - i n t e r n a l ' : 
+             ' I f   y e s ,   c l i e n t s   c a n n o t   p u b l i s h   t o   t h i s   e x c h a n g e   d i r e c t l y .   I t   c a n   o n l y   b e   u s e d   w i t h   e x c h a n g e   t o   e x c h a n g e   b i n d i n g s . ' , 
+ 
+         ' e x c h a n g e - a l t e r n a t e ' : 
+             ' I f   m e s s a g e s   t o   t h i s   e x c h a n g e   c a n n o t   o t h e r w i s e   b e   r o u t e d ,   s e n d   t h e m   t o   t h e   a l t e r n a t e   e x c h a n g e   n a m e d   h e r e . < b r / > ( S e t s   t h e   " < a   t a r g e t = " _ b l a n k "   h r e f = " h t t p : / / r a b b i t m q . c o m / a e . h t m l " > a l t e r n a t e - e x c h a n g e < / a > "   a r g u m e n t . ) ' , 
+ 
+         ' q u e u e - m e s s a g e - t t l ' : 
+         ' H o w   l o n g   a   m e s s a g e   p u b l i s h e d   t o   a   q u e u e   c a n   l i v e   b e f o r e   i t   i s   d i s c a r d e d   ( m i l l i s e c o n d s ) . < b r / > ( S e t s   t h e   " < a   t a r g e t = " _ b l a n k "   h r e f = " h t t p : / / r a b b i t m q . c o m / t t l . h t m l # p e r - q u e u e - m e s s a g e - t t l " > x - m e s s a g e - t t l < / a > "   a r g u m e n t . ) ' , 
+ 
+         ' q u e u e - e x p i r e s ' : 
+             ' H o w   l o n g   a   q u e u e   c a n   b e   u n u s e d   f o r   b e f o r e   i t   i s   a u t o m a t i c a l l y   d e l e t e d   ( m i l l i s e c o n d s ) . < b r / > ( S e t s   t h e   " < a   t a r g e t = " _ b l a n k "   h r e f = " h t t p : / / r a b b i t m q . c o m / t t l . h t m l # q u e u e - t t l " > x - e x p i r e s < / a > "   a r g u m e n t . ) ' , 
+ 
+         ' q u e u e - m a x - l e n g t h ' : 
+             ' H o w   m a n y   ( r e a d y )   m e s s a g e s   a   q u e u e   c a n   c o n t a i n   b e f o r e   i t   s t a r t s   t o   d r o p   t h e m   f r o m   i t s   h e a d . < b r / > ( S e t s   t h e   " < a   t a r g e t = " _ b l a n k "   h r e f = " h t t p : / / r a b b i t m q . c o m / m a x l e n g t h . h t m l " > x - m a x - l e n g t h < / a > "   a r g u m e n t . ) ' , 
+ 
+         ' q u e u e - m a x - l e n g t h - b y t e s ' : 
+             ' T o t a l   b o d y   s i z e   f o r   r e a d y   m e s s a g e s   a   q u e u e   c a n   c o n t a i n   b e f o r e   i t   s t a r t s   t o   d r o p   t h e m   f r o m   i t s   h e a d . < b r / > ( S e t s   t h e   " < a   t a r g e t = " _ b l a n k "   h r e f = " h t t p : / / r a b b i t m q . c o m / m a x l e n g t h . h t m l " > x - m a x - l e n g t h - b y t e s < / a > "   a r g u m e n t . ) ' , 
+ 
+         ' q u e u e - a u t o - d e l e t e ' : 
+             ' I f   y e s ,   t h e   q u e u e   w i l l   d e l e t e   i t s e l f   a f t e r   a t   l e a s t   o n e   c o n s u m e r   h a s   c o n n e c t e d ,   a n d   t h e n   a l l   c o n s u m e r s   h a v e   d i s c o n n e c t e d . ' , 
+ 
+         ' q u e u e - d e a d - l e t t e r - e x c h a n g e ' : 
+             ' O p t i o n a l   n a m e   o f   a n   e x c h a n g e   t o   w h i c h   m e s s a g e s   w i l l   b e   r e p u b l i s h e d   i f   t h e y   a r e   r e j e c t e d   o r   e x p i r e . < b r / > ( S e t s   t h e   " < a   t a r g e t = " _ b l a n k "   h r e f = " h t t p : / / r a b b i t m q . c o m / d l x . h t m l " > x - d e a d - l e t t e r - e x c h a n g e < / a > "   a r g u m e n t . ) ' , 
+ 
+         ' q u e u e - d e a d - l e t t e r - r o u t i n g - k e y ' : 
+             ' O p t i o n a l   r e p l a c e m e n t   r o u t i n g   k e y   t o   u s e   w h e n   a   m e s s a g e   i s   d e a d - l e t t e r e d .   I f   t h i s   i s   n o t   s e t ,   t h e   m e s s a g e \ ' s   o r i g i n a l   r o u t i n g   k e y   w i l l   b e   u s e d . < b r / > ( S e t s   t h e   " < a   t a r g e t = " _ b l a n k "   h r e f = " h t t p : / / r a b b i t m q . c o m / d l x . h t m l " > x - d e a d - l e t t e r - r o u t i n g - k e y < / a > "   a r g u m e n t . ) ' , 
+ 
+         ' q u e u e - m a x - p r i o r i t y ' : 
+             ' M a x i m u m   n u m b e r   o f   p r i o r i t y   l e v e l s   f o r   t h e   q u e u e   t o   s u p p o r t ;   i f   n o t   s e t ,   t h e   q u e u e   w i l l   n o t   s u p p o r t   m e s s a g e   p r i o r i t i e s . < b r / > ( S e t s   t h e   " < a   t a r g e t = " _ b l a n k "   h r e f = " h t t p : / / r a b b i t m q . c o m / p r i o r i t y . h t m l " > x - m a x - p r i o r i t y < / a > "   a r g u m e n t . ) ' , 
+ 
+         ' q u e u e - l a z y ' : 
+             ' S e t   t h e   q u e u e   i n t o   l a z y   m o d e ,   k e e p i n g   a s   m a n y   m e s s a g e s   a s   p o s s i b l e   o n   d i s k   t o   r e d u c e   R A M   u s a g e ;   i f   n o t   s e t ,   t h e   q u e u e   w i l l   k e e p   a n   i n - m e m o r y   c a c h e   t o   d e l i v e r   m e s s a g e s   a s   f a s t   a s   p o s s i b l e . < b r / > ( S e t s   t h e   " < a   t a r g e t = " _ b l a n k "   h r e f = " h t t p s : / / w w w . r a b b i t m q . c o m / l a z y - q u e u e s . h t m l " > x - q u e u e - m o d e < / a > "   a r g u m e n t . ) ' , 
+ 
+         ' q u e u e - m a s t e r - l o c a t o r ' : 
+               ' S e t   t h e   q u e u e   i n t o   m a s t e r   l o c a t i o n   m o d e ,   d e t e r m i n i n g   t h e   r u l e   b y   w h i c h   t h e   q u e u e   m a s t e r   i s   l o c a t e d   w h e n   d e c l a r e d   o n   a   c l u s t e r   o f   n o d e s . < b r / > ( S e t s   t h e   " < a   t a r g e t = " _ b l a n k "   h r e f = " h t t p s : / / w w w . r a b b i t m q . c o m / h a . h t m l " > x - q u e u e - m a s t e r - l o c a t o r < / a > "   a r g u m e n t . ) ' , 
+ 
+         ' q u e u e - m e s s a g e s ' : 
+             ' < p > M e s s a g e   c o u n t s . < / p > < p > N o t e   t h a t   " i n   m e m o r y "   a n d   " p e r s i s t e n t "   a r e   n o t   m u t u a l l y   e x c l u s i v e ;   p e r s i s t e n t   m e s s a g e s   c a n   b e   i n   m e m o r y   a s   w e l l   a s   o n   d i s c ,   a n d   t r a n s i e n t   m e s s a g e s   c a n   b e   p a g e d   o u t   i f   m e m o r y   i s   t i g h t .   N o n - d u r a b l e   q u e u e s   w i l l   c o n s i d e r   a l l   m e s s a g e s   t o   b e   t r a n s i e n t . < / p > ' , 
+ 
+         ' q u e u e - m e s s a g e - b o d y - b y t e s ' : 
+             ' < p > T h e   s u m   t o t a l   o f   t h e   s i z e s   o f   t h e   m e s s a g e   b o d i e s   i n   t h i s   q u e u e .   T h i s   o n l y   c o u n t s   m e s s a g e   b o d i e s ;   i t   d o e s   n o t   i n c l u d e   m e s s a g e   p r o p e r t i e s   ( i n c l u d i n g   h e a d e r s )   o r   m e t a d a t a   u s e d   b y   t h e   q u e u e . < / p > < p > N o t e   t h a t   " i n   m e m o r y "   a n d   " p e r s i s t e n t "   a r e   n o t   m u t u a l l y   e x c l u s i v e ;   p e r s i s t e n t   m e s s a g e s   c a n   b e   i n   m e m o r y   a s   w e l l   a s   o n   d i s c ,   a n d   t r a n s i e n t   m e s s a g e s   c a n   b e   p a g e d   o u t   i f   m e m o r y   i s   t i g h t .   N o n - d u r a b l e   q u e u e s   w i l l   c o n s i d e r   a l l   m e s s a g e s   t o   b e   t r a n s i e n t . < / p > < p > I f   a   m e s s a g e   i s   r o u t e d   t o   m u l t i p l e   q u e u e s   o n   p u b l i c a t i o n ,   i t s   b o d y   w i l l   b e   s t o r e d   o n l y   o n c e   ( i n   m e m o r y   a n d   o n   d i s k )   a n d   s h a r e d   b e t w e e n   q u e u e s .   T h e   v a l u e   s h o w n   h e r e   d o e s   n o t   t a k e   a c c o u n t   o f   t h i s   e f f e c t . < / p > ' , 
+ 
+         ' q u e u e - p r o c e s s - m e m o r y ' : 
+             ' T o t a l   m e m o r y   u s e d   b y   t h i s   q u e u e   p r o c e s s .   T h i s   d o e s   n o t   i n c l u d e   i n - m e m o r y   m e s s a g e   b o d i e s   ( w h i c h   m a y   b e   s h a r e d   b e t w e e n   q u e u e s   a n d   w i l l   a p p e a r   i n   t h e   g l o b a l   " b i n a r i e s "   m e m o r y )   b u t   d o e s   i n c l u d e   e v e r y t h i n g   e l s e . ' , 
+ 
+         ' q u e u e - c o n s u m e r - u t i l i s a t i o n ' : 
+             ' F r a c t i o n   o f   t h e   t i m e   t h a t   t h e   q u e u e   i s   a b l e   t o   i m m e d i a t e l y   d e l i v e r   m e s s a g e s   t o   c o n s u m e r s .   I f   t h i s   n u m b e r   i s   l e s s   t h a n   1 0 0 %   y o u   m a y   b e   a b l e   t o   d e l i v e r   m e s s a g e s   f a s t e r   i f :   \ 
+                 < u l >   \ 
+                     < l i > T h e r e   w e r e   m o r e   c o n s u m e r s   o r < / l i >   \ 
+                     < l i > T h e   c o n s u m e r s   w e r e   f a s t e r   o r < / l i >   \ 
+                     < l i > T h e   c o n s u m e r s   h a d   a   h i g h e r   p r e f e t c h   c o u n t < / l i >   \ 
+                 < / u l > ' , 
+ 
+         ' i n t e r n a l - u s e r s - o n l y ' : 
+             ' O n l y   u s e r s   w i t h i n   t h e   i n t e r n a l   R a b b i t M Q   d a t a b a s e   a r e   s h o w n   h e r e .   O t h e r   u s e r s   ( e . g .   t h o s e   a u t h e n t i c a t e d   o v e r   L D A P )   w i l l   n o t   a p p e a r . ' , 
+ 
+         ' e x p o r t - d e f i n i t i o n s ' : 
+         ' T h e   d e f i n i t i o n s   c o n s i s t   o f   u s e r s ,   v i r t u a l   h o s t s ,   p e r m i s s i o n s ,   p a r a m e t e r s ,   e x c h a n g e s ,   q u e u e s   a n d   b i n d i n g s .   T h e y   d o   n o t   i n c l u d e   t h e   c o n t e n t s   o f   q u e u e s   o r   t h e   c l u s t e r   n a m e .   E x c l u s i v e   q u e u e s   w i l l   n o t   b e   e x p o r t e d . ' , 
+ 
+         ' e x p o r t - d e f i n i t i o n s - v h o s t ' : 
+         ' T h e   d e f i n i t i o n s   e x p o r t e d   f o r   a   s i n g l e   v i r t u a l   h o s t   c o n s i s t   o f   e x c h a n g e s ,   q u e u e s ,   b i n d i n g s   a n d   p o l i c i e s . ' , 
+ 
+         ' i m p o r t - d e f i n i t i o n s ' : 
+             ' T h e   d e f i n i t i o n s   t h a t   a r e   i m p o r t e d   w i l l   b e   m e r g e d   w i t h   t h e   c u r r e n t   d e f i n i t i o n s .   I f   a n   e r r o r   o c c u r s   d u r i n g   i m p o r t ,   a n y   c h a n g e s   m a d e   w i l l   n o t   b e   r o l l e d   b a c k . ' , 
+ 
+         ' i m p o r t - d e f i n i t i o n s - v h o s t ' : 
+         ' F o r   a   s i n g l e   v i r t u a l   h o s t ,   o n l y   e x c h a n g e s ,   q u e u e s ,   b i n d i n g s   a n d   p o l i c i e s   a r e   i m p o r t e d . ' , 
+ 
+         ' e x c h a n g e - r a t e s - i n c o m i n g ' : 
+             ' T h e   i n c o m i n g   r a t e   i s   t h e   r a t e   a t   w h i c h   m e s s a g e s   a r e   p u b l i s h e d   d i r e c t l y   t o   t h i s   e x c h a n g e . ' , 
+ 
+         ' e x c h a n g e - r a t e s - o u t g o i n g ' : 
+             ' T h e   o u t g o i n g   r a t e   i s   t h e   r a t e   a t   w h i c h   m e s s a g e s   e n t e r   q u e u e s ,   h a v i n g   b e e n   p u b l i s h e d   d i r e c t l y   t o   t h i s   e x c h a n g e . ' , 
+ 
+         ' c h a n n e l - m o d e ' : 
+             ' C h a n n e l   g u a r a n t e e   m o d e .   C a n   b e   o n e   o f   t h e   f o l l o w i n g ,   o r   n e i t h e r : < b r / >   \ 
+             < d l >   \ 
+                 < d t > < a b b r   t i t l e = " C o n f i r m " > C < / a b b r >   & n d a s h ;   < a   t a r g e t = " _ b l a n k "   h r e f = " h t t p : / / w w w . r a b b i t m q . c o m / c o n f i r m s . h t m l " > c o n f i r m < / a > < / d t >   \ 
+                 < d d > C h a n n e l   w i l l   s e n d   s t r e a m i n g   p u b l i s h   c o n f i r m a t i o n s . < / d d >   \ 
+                 < d t > < a b b r   t i t l e = " T r a n s a c t i o n a l " > T < / a b b r >   & n d a s h ;   < a   t a r g e t = " _ b l a n k "   h r e f = " h t t p : / / w w w . r a b b i t m q . c o m / a m q p - 0 - 9 - 1 - r e f e r e n c e . h t m l # c l a s s . t x " > t r a n s a c t i o n a l < / a > < / d t >   \ 
+                 < d d > C h a n n e l   i s   t r a n s a c t i o n a l . < / d d >   \ 
+             < / d l > ' , 
+ 
+         ' c h a n n e l - p r e f e t c h ' : 
+             ' C h a n n e l   p r e f e t c h   c o u n t s .   \ 
+               < p >   \ 
+                   E a c h   c h a n n e l   c a n   h a v e   t w o   p r e f e t c h   c o u n t s :   A   p e r - c o n s u m e r   c o u n t ,   w h i c h   \ 
+                   w i l l   l i m i t   e a c h   n e w   c o n s u m e r   c r e a t e d   o n   t h e   c h a n n e l ,   a n d   a   g l o b a l   \ 
+                   c o u n t ,   w h i c h   i s   s h a r e d   b e t w e e n   a l l   c o n s u m e r s   o n   t h e   c h a n n e l . \ 
+               < / p >   \ 
+               < p >   \ 
+                   T h i s   c o l u m n   s h o w s   o n e ,   t h e   o t h e r ,   o r   b o t h   l i m i t s   i f   t h e y   a r e   s e t .   \ 
+               < / p > ' , 
+ 
+         ' f i l e - d e s c r i p t o r s ' : 
+             ' < p > F i l e   d e s c r i p t o r   c o u n t   a n d   l i m i t ,   a s   r e p o r t e d   b y   t h e   o p e r a t i n g   \ 
+             s y s t e m .   T h e   c o u n t   i n c l u d e s   n e t w o r k   s o c k e t s   a n d   f i l e   h a n d l e s . < / p >   \ 
+             < p > T o   o p t i m i z e   d i s k   a c c e s s   R a b b i t M Q   u s e s   a s   m a n y   f r e e   d e s c r i p t o r s   a s   a r e   \ 
+             a v a i l a b l e ,   s o   t h e   c o u n t   m a y   s a f e l y   a p p r o a c h   t h e   l i m i t .   \ 
+             H o w e v e r ,   i f   m o s t   o f   t h e   f i l e   d e s c r i p t o r s   a r e   u s e d   b y   s o c k e t s   t h e n   \ 
+             p e r s i s t e r   p e r f o r m a n c e   w i l l   b e   n e g a t i v e l y   i m p a c t e d . < / p >   \ 
+             < p > T o   c h a n g e   t h e   l i m i t   o n   U n i x   /   L i n u x ,   u s e   " u l i m i t   - n " .   T o   c h a n g e   \ 
+             t h e   l i m i t   o n   W i n d o w s ,   s e t   t h e   E R L _ M A X _ P O R T S   e n v i r o n m e n t   v a r i a b l e < / p >   \ 
+             < p > T o   r e p o r t   u s e d   f i l e   h a n d l e s   o n   W i n d o w s ,   h a n d l e . e x e   f r o m   \ 
+             s y s i n t e r n a l s   m u s t   b e   i n s t a l l e d   i n   y o u r   p a t h .   Y o u   c a n   d o w n l o a d   i t   \ 
+             < a   t a r g e t = " _ b l a n k "   h r e f = " h t t p : / / t e c h n e t . m i c r o s o f t . c o m / e n - u s / s y s i n t e r n a l s / b b 8 9 6 6 5 5 " > h e r e < / a > . < / p > ' , 
+ 
+         ' s o c k e t - d e s c r i p t o r s ' : 
+             ' T h e   n e t w o r k   s o c k e t s   c o u n t   a n d   l i m i t   m a n a g e d   b y   R a b b i t M Q . < b r / >   \ 
+             W h e n   t h e   l i m i t   i s   e x h a u s t e d   R a b b i t M Q   w i l l   s t o p   a c c e p t i n g   n e w   \ 
+             n e t w o r k   c o n n e c t i o n s . ' , 
+ 
+         ' m e m o r y - a l a r m ' : 
+             ' < p > T h e   < a   t a r g e t = " _ b l a n k "   h r e f = " h t t p : / / w w w . r a b b i t m q . c o m / m e m o r y . h t m l # m e m s u p " > m e m o r y   \ 
+             a l a r m < / a >   f o r   t h i s   n o d e   h a s   g o n e   o f f .   I t   w i l l   b l o c k   \ 
+             i n c o m i n g   n e t w o r k   t r a f f i c   u n t i l   t h e   m e m o r y   u s a g e   d r o p s   b e l o w   \ 
+             t h e   w a t e r m a r k . < / p > \ 
+             < p > N o t e   t h a t   t h e   p a l e   l i n e   i n   t h i s   c a s e   i n d i c a t e s   t h e   h i g h   w a t e r m a r k   \ 
+             i n   r e l a t i o n   t o   h o w   m u c h   m e m o r y   i s   u s e d   i n   t o t a l .   < / p > ' , 
+ 
+         ' d i s k - f r e e - a l a r m ' : 
+             ' T h e   < a   t a r g e t = " _ b l a n k "   h r e f = " h t t p : / / w w w . r a b b i t m q . c o m / m e m o r y . h t m l # d i s k f r e e s u p " > d i s k   \ 
+             f r e e   s p a c e   a l a r m < / a >   f o r   t h i s   n o d e   h a s   g o n e   o f f .   I t   w i l l   b l o c k   \ 
+             i n c o m i n g   n e t w o r k   t r a f f i c   u n t i l   t h e   a m o u n t   o f   f r e e   s p a c e   e x c e e d s   \ 
+             t h e   l i m i t . ' , 
+ 
+         ' m e s s a g e - g e t - r e q u e u e ' : 
+             ' < p > C l i c k i n g   " G e t   M e s s a g e ( s ) "   w i l l   c o n s u m e   m e s s a g e s   f r o m   t h e   q u e u e .   \ 
+             I f   r e q u e u e   i s   s e t   t h e   m e s s a g e   w i l l   b e   p u t   b a c k   i n t o   t h e   q u e u e   i n   p l a c e ,   \ 
+             b u t   " r e d e l i v e r e d "   w i l l   b e   s e t   o n   t h e   m e s s a g e . < / p >   \ 
+             < p > I f   r e q u e u e   i s   n o t   s e t   m e s s a g e s   w i l l   b e   r e m o v e d   f r o m   t h e   q u e u e . < / p >   \ 
+             < p > F u r t h e r m o r e ,   m e s s a g e   p a y l o a d s   w i l l   b e   t r u n c a t e d   t o   5 0 0 0 0   b y t e s . < / p > ' , 
+ 
+         ' m e s s a g e - p u b l i s h - h e a d e r s ' : 
+             ' H e a d e r s   c a n   h a v e   a n y   n a m e .   O n l y   l o n g   s t r i n g   h e a d e r s   c a n   b e   s e t   h e r e . ' , 
+ 
+         ' m e s s a g e - p u b l i s h - p r o p e r t i e s ' : 
+             ' < p > Y o u   c a n   s e t   o t h e r   m e s s a g e   p r o p e r t i e s   h e r e   ( d e l i v e r y   m o d e   a n d   h e a d e r s   \ 
+             a r e   p u l l e d   o u t   a s   t h e   m o s t   c o m m o n   c a s e s ) . < / p > \ 
+             < p > I n v a l i d   p r o p e r t i e s   w i l l   b e   i g n o r e d .   V a l i d   p r o p e r t i e s   a r e : < / p > \ 
+             < u l > \ 
+             < l i > c o n t e n t _ t y p e < / l i > \ 
+             < l i > c o n t e n t _ e n c o d i n g < / l i > \ 
+             < l i > p r i o r i t y < / l i > \ 
+             < l i > c o r r e l a t i o n _ i d < / l i > \ 
+             < l i > r e p l y _ t o < / l i > \ 
+             < l i > e x p i r a t i o n < / l i > \ 
+             < l i > m e s s a g e _ i d < / l i > \ 
+             < l i > t i m e s t a m p < / l i > \ 
+             < l i > t y p e < / l i > \ 
+             < l i > u s e r _ i d < / l i > \ 
+             < l i > a p p _ i d < / l i > \ 
+             < l i > c l u s t e r _ i d < / l i > \ 
+             < / u l > ' , 
+ 
+         ' s t r i n g - b a s e 6 4 ' : 
+         ' < p > A M Q P   m e s s a g e   p a y l o a d s   c a n   c o n t a i n   a n y   b i n a r y   c o n t e n t .   T h e y   c a n   \ 
+           t h e r e f o r e   b e   d i f f i c u l t   t o   d i s p l a y   i n   a   b r o w s e r .   T h e   o p t i o n s   h e r e   \ 
+           h a v e   t h e   f o l l o w i n g   m e a n i n g s : < / p >   \ 
+           < d l >   \ 
+               < d t > A u t o   s t r i n g   /   b a s e 6 4 < / d t >   \ 
+               < d d > I f   t h e   m e s s a g e   p a y l o a d   c a n   b e   i n t e r p r e t e d   a s   a   s t r i n g   i n   U T F - 8   \ 
+                       e n c o d i n g ,   d o   s o .   O t h e r w i s e   r e t u r n   t h e   p a y l o a d   e n c o d e d   a s   \ 
+                       b a s e 6 4 . < / d d >   \ 
+               < d t > b a s e 6 4 < / d t >   \ 
+               < d d > R e t u r n   t h e   p a y l o a d   e n c o d e d   a s   b a s e 6 4   u n c o n d i t i o n a l l y . < / d d >   \ 
+           < / d l > ' , 
+ 
+         ' u s e r - t a g s ' : 
+             ' C o m m a - s e p a r a t e d   l i s t   o f   t a g s   t o   a p p l y   t o   t h e   u s e r .   C u r r e n t l y   \ 
+               < a   t a r g e t = " _ b l a n k "   h r e f = " h t t p : / / w w w . r a b b i t m q . c o m / m a n a g e m e n t . h t m l # p e r m i s s i o n s " > s u p p o r t e d   \ 
+               b y   t h e   m a n a g e m e n t   p l u g i n < / a > :   \ 
+             < d l >   \ 
+                 < d t > m a n a g e m e n t < / d t >   \ 
+                 < d d >   \ 
+                     U s e r   c a n   a c c e s s   t h e   m a n a g e m e n t   p l u g i n   \ 
+                 < / d d >   \ 
+                 < d t > p o l i c y m a k e r < / d t >   \ 
+                 < d d >   \ 
+                     U s e r   c a n   a c c e s s   t h e   m a n a g e m e n t   p l u g i n   a n d   m a n a g e   p o l i c i e s   a n d   \ 
+                     p a r a m e t e r s   f o r   t h e   v h o s t s   t h e y   h a v e   a c c e s s   t o .   \ 
+                 < / d d >   \ 
+                 < d t > m o n i t o r i n g < / d t >   \ 
+                 < d d >   \ 
+                     U s e r   c a n   a c c e s s   t h e   m a n a g e m e n t   p l u g i n   a n d   s e e   a l l   c o n n e c t i o n s   a n d   \ 
+                     c h a n n e l s   a s   w e l l   a s   n o d e - r e l a t e d   i n f o r m a t i o n .   \ 
+                 < / d d >   \ 
+                 < d t > a d m i n i s t r a t o r < / d t >   \ 
+                 < d d >   \ 
+                     U s e r   c a n   d o   e v e r y t h i n g   m o n i t o r i n g   c a n   d o ,   m a n a g e   u s e r s ,   \ 
+                     v h o s t s   a n d   p e r m i s s i o n s ,   c l o s e   o t h e r   u s e r \ ' s   c o n n e c t i o n s ,   a n d   m a n a g e   \ 
+                     p o l i c i e s   a n d   p a r a m e t e r s   f o r   a l l   v h o s t s .   \ 
+                 < / d d >   \ 
+             < / d l >   \ 
+             < p >   \ 
+                 N o t e   t h a t   y o u   c a n   s e t   a n y   t a g   h e r e ;   t h e   l i n k s   f o r   t h e   a b o v e   f o u r   \ 
+                 t a g s   a r e   j u s t   f o r   c o n v e n i e n c e .   \ 
+             < / p > ' , 
+ 
+         ' q u e u e d - m e s s a g e s ' : 
+             ' < d l >                                                     \ 
+                 < d t > R e a d y < / d t > \ 
+                 < d d > N u m b e r   o f   m e s s a g e s   t h a t   a r e   a v a i l a b l e   t o   b e   d e l i v e r e d   n o w . < / d d > \ 
+                 < d t > U n a c k n o w l e d g e d < / d t > \ 
+                 < d d > N u m b e r   o f   m e s s a g e s   f o r   w h i c h   t h e   s e r v e r   i s   w a i t i n g   f o r   a c k n o w l e d g e m e n t . < / d d > \ 
+                 < d t > T o t a l < / d t > \ 
+                 < d d > T h e   t o t a l   o f   t h e s e   t w o   n u m b e r s . < / d d > \ 
+             < / d l > ' , 
+ 
+         ' m e s s a g e - r a t e s ' : 
+         ' O n l y   r a t e s   f o r   w h i c h   s o m e   a c t i v i t y   i s   t a k i n g   p l a c e   w i l l   b e   s h o w n . \ 
+             < d l > \ 
+                 < d t > P u b l i s h < / d t > \ 
+                 < d d > R a t e   a t   w h i c h   m e s s a g e s   a r e   e n t e r i n g   t h e   s e r v e r . < / d d > \ 
+                 < d t > P u b l i s h e r   c o n f i r m < / d t > \ 
+                 < d d > R a t e   a t   w h i c h   t h e   s e r v e r   i s   c o n f i r m i n g   p u b l i s h e s . < / d d > \ 
+                 < d t > D e l i v e r   ( m a n u a l   a c k ) < / d t > \ 
+                 < d d > R a t e   a t   w h i c h   m e s s a g e s   a r e   d e l i v e r e d   t o   c o n s u m e r s   t h a t   u s e   m a n u a l   a c k n o w l e d g e m e n t s . < / d d > \ 
+                 < d t > D e l i v e r   ( a u t o   a c k ) < / d t > \ 
+                 < d d > R a t e   a t   w h i c h   m e s s a g e s   a r e   d e l i v e r e d   t o   c o n s u m e r s   t h a t   u s e   a u t o m a t i c   a c k n o w l e d g e m e n t s . < / d d > \ 
+                 < d t > C o n s u m e r   a c k < / d t > \ 
+                 < d d > R a t e   a t   w h i c h   m e s s a g e s   a r e   b e i n g   a c k n o w l e d g e d   b y   c o n s u m e r s . < / d d > \ 
+                 < d t > R e d e l i v e r e d < / d t > \ 
+                 < d d > R a t e   a t   w h i c h   m e s s a g e s   w i t h   t h e   \ ' r e d e l i v e r e d \ '   f l a g   s e t   a r e   b e i n g   d e l i v e r e d .   N o t e   t h a t   t h e s e   m e s s a g e s   w i l l   < b > a l s o < / b >   b e   c o u n t e d   i n   o n e   o f   t h e   d e l i v e r y   r a t e s   a b o v e . < / d d > \ 
+                 < d t > G e t   ( m a n u a l   a c k ) < / d t > \ 
+                 < d d > R a t e   a t   w h i c h   m e s s a g e s   r e q u i r i n g   a c k n o w l e d g e m e n t   a r e   b e i n g   d e l i v e r e d   i n   r e s p o n s e   t o   b a s i c . g e t . < / d d > \ 
+                 < d t > G e t   ( a u t o   a c k ) < / d t > \ 
+                 < d d > R a t e   a t   w h i c h   m e s s a g e s   n o t   r e q u i r i n g   a c k n o w l e d g e m e n t   a r e   b e i n g   d e l i v e r e d   i n   r e s p o n s e   t o   b a s i c . g e t . < / d d > \ 
+                 < d t > R e t u r n < / d t > \ 
+                 < d d > R a t e   a t   w h i c h   b a s i c . r e t u r n   i s   s e n t   t o   p u b l i s h e r s   f o r   u n r o u t a b l e   m e s s a g e s   p u b l i s h e d   w i t h   t h e   \ ' m a n d a t o r y \ '   f l a g   s e t . < / d d > \ 
+                 < d t > D i s k   r e a d < / d t > \ 
+                 < d d > R a t e   a t   w h i c h   q u e u e s   r e a d   m e s s a g e s   f r o m   d i s k . < / d d > \ 
+                 < d t > D i s k   w r i t e < / d t > \ 
+                 < d d > R a t e   a t   w h i c h   q u e u e s   w r i t e   m e s s a g e s   t o   d i s k . < / d d > \ 
+             < / d l > \ 
+             < p > \ 
+                 N o t e   t h a t   t h e   l a s t   t w o   i t e m s   a r e   o r i g i n a t e   i n   q u e u e s   r a t h e r   t h a n   \ 
+                 c h a n n e l s ;   t h e y   m a y   t h e r e f o r e   b e   s l i g h t l y   o u t   o f   s y n c   w i t h   o t h e r   \ 
+                 s t a t i s t i c s . \ 
+             < / p > ' , 
+ 
+         ' d i s k - m o n i t o r i n g - n o - w a t e r m a r k '   :   ' T h e r e   i s   n o   < a   t a r g e t = " _ b l a n k "   h r e f = " h t t p : / / w w w . r a b b i t m q . c o m / m e m o r y . h t m l # d i s k f r e e s u p " > d i s k   s p a c e   l o w   w a t e r m a r k < / a >   s e t .   R a b b i t M Q   w i l l   n o t   t a k e   a n y   a c t i o n   t o   a v o i d   r u n n i n g   o u t   o f   d i s k   s p a c e . ' , 
+ 
+         ' r e s o u r c e - c o u n t s '   :   ' S h o w s   t o t a l   n u m b e r   o f   o b j e c t s   f o r   a l l   v i r t u a l   h o s t s   t h e   c u r r e n t   u s e r   h a s   a c c e s s   t o . ' , 
+ 
+         ' m e m o r y - u s e '   :   ' < p > N o t e   t h a t   t h e   m e m o r y   d e t a i l s   s h o w n   h e r e   a r e   o n l y   u p d a t e d   o n   r e q u e s t   -   t h e y   c o u l d   b e   t o o   e x p e n s i v e   t o   c a l c u l a t e   e v e r y   f e w   s e c o n d s   o n   a   b u s y   s e r v e r . < / p > < p > < a   t a r g e t = " _ b l a n k "   h r e f = " h t t p : / / w w w . r a b b i t m q . c o m / m e m o r y - u s e . h t m l " > R e a d   m o r e < / a >   o n   m e m o r y   u s e . < / p > ' , 
+ 
+         ' b i n a r y - u s e '   :   ' < p > B i n a r y   a c c o u n t i n g   i s   n o t   e x a c t ;   b i n a r i e s   a r e   s h a r e d   b e t w e e n   p r o c e s s e s   ( a n d   t h u s   t h e   s a m e   b i n a r y   m i g h t   b e   c o u n t e d   i n   m o r e   t h a n   o n e   s e c t i o n ) ,   a n d   t h e   V M   d o e s   n o t   a l l o w   u s   t o   t r a c k   b i n a r i e s   t h a t   a r e   n o t   a s s o c i a t e d   w i t h   p r o c e s s e s   ( s o   s o m e   b i n a r y   u s e   m i g h t   n o t   a p p e a r   a t   a l l ) . < / p > ' , 
+ 
+         ' p o l i c y - h a - m o d e '   :   ' O n e   o f   < c o d e > a l l < / c o d e >   ( m i r r o r   t o   a l l   n o d e s   i n   t h e   c l u s t e r ) ,   < c o d e > e x a c t l y < / c o d e >   ( m i r r o r   t o   a   s e t   n u m b e r   o f   n o d e s )   o r   < c o d e > n o d e s < / c o d e >   ( m i r r o r   t o   a n   e x p l i c i t   l i s t   o f   n o d e s ) .   I f   y o u   c h o o s e   o n e   o f   t h e   l a t t e r   t w o ,   y o u   m u s t   a l s o   s e t   < c o d e > h a - p a r a m s < / c o d e > . ' , 
+ 
+         ' p o l i c y - h a - p a r a m s '   :   ' A b s e n t   i f   < c o d e > h a - m o d e < / c o d e >   i s   < c o d e > a l l < / c o d e > ,   a   n u m b e r \ 
+         i f   < c o d e > h a - m o d e < / c o d e >   i s   < c o d e > e x a c t l y < / c o d e > ,   o r   a   l i s t \ 
+         o f   s t r i n g s   i f   < c o d e > h a - m o d e < / c o d e >   i s   < c o d e > n o d e s < / c o d e > . ' , 
+ 
+         ' p o l i c y - h a - s y n c - m o d e '   :   ' O n e   o f   < c o d e > m a n u a l < / c o d e >   o r   < c o d e > a u t o m a t i c < / c o d e > . ' , 
+ 
+         ' p o l i c y - f e d e r a t i o n - u p s t r e a m - s e t '   : 
+         ' A   s t r i n g ;   o n l y   i f   t h e   f e d e r a t i o n   p l u g i n   i s   e n a b l e d .   C h o o s e s   t h e   n a m e   o f   a   s e t   o f   u p s t r e a m s   t o   u s e   w i t h   f e d e r a t i o n ,   o r   " a l l "   t o   u s e   a l l   u p s t r e a m s .   I n c o m p a t i b l e   w i t h   < c o d e > f e d e r a t i o n - u p s t r e a m < / c o d e > . ' , 
+ 
+         ' p o l i c y - f e d e r a t i o n - u p s t r e a m '   : 
+         ' A   s t r i n g ;   o n l y   i f   t h e   f e d e r a t i o n   p l u g i n   i s   e n a b l e d .   C h o o s e s   a   s p e c i f i c   u p s t r e a m   s e t   t o   u s e   f o r   f e d e r a t i o n .   I n c o m p a t i b l e   w i t h   < c o d e > f e d e r a t i o n - u p s t r e a m - s e t < / c o d e > . ' , 
+ 
+         ' h a n d l e - e x e '   :   ' I n   o r d e r   t o   m o n i t o r   t h e   n u m b e r   o f   f i l e   d e s c r i p t o r s   i n   u s e   o n   W i n d o w s ,   R a b b i t M Q   n e e d s   t h e   < a   h r e f = " h t t p : / / t e c h n e t . m i c r o s o f t . c o m / e n - u s / s y s i n t e r n a l s / b b 8 9 6 6 5 5 "   t a r g e t = " _ b l a n k " > h a n d l e . e x e   c o m m a n d   l i n e   t o o l   f r o m   M i c r o s o f t < / a > .   D o w n l o a d   i t   a n d   p l a c e   i t   i n   t h e   p a t h   ( e . g .   i n   C : \ W i n d o w s ) . ' , 
+ 
+         ' f i l t e r - r e g e x '   : 
+         ' W h e t h e r   t o   e n a b l e   r e g u l a r   e x p r e s s i o n   m a t c h i n g .   B o t h   s t r i n g   l i t e r a l s   \ 
+         a n d   r e g u l a r   e x p r e s s i o n s   a r e   m a t c h e d   i n   a   c a s e - i n s e n s i t i v e   m a n n e r . < b r / > < / b r / >   \ 
+         ( < a   h r e f = " h t t p s : / / d e v e l o p e r . m o z i l l a . o r g / e n / d o c s / W e b / J a v a S c r i p t / G u i d e / R e g u l a r _ E x p r e s s i o n s "   t a r g e t = " _ b l a n k " > R e g u l a r   e x p r e s s i o n   r e f e r e n c e < / a > ) ' , 
+ 
+         ' p l u g i n s '   : 
+         ' N o t e   t h a t   o n l y   p l u g i n s   w h i c h   a r e   b o t h   e x p l i c i t l y   e n a b l e d   a n d   r u n n i n g   a r e   s h o w n   h e r e . ' , 
+ 
+         ' i o - o p e r a t i o n s ' : 
+         ' R a t e   o f   I / O   o p e r a t i o n s .   O n l y   o p e r a t i o n s   p e r f o r m e d   b y   t h e   m e s s a g e   \ 
+             p e r s i s t e r   a r e   s h o w n   h e r e   ( e . g .   m e t a d a t a   c h a n g e s   i n   M n e s i a   o r   w r i t e s   \ 
+             t o   t h e   l o g   f i l e s   a r e   n o t   s h o w n ) . \ 
+             < d l > \ 
+                 < d t > R e a d < / d t > \ 
+                 < d d > R a t e   a t   w h i c h   d a t a   i s   r e a d   f r o m   t h e   d i s k . < / d d > \ 
+                 < d t > W r i t e < / d t > \ 
+                 < d d > R a t e   a t   w h i c h   d a t a   i s   w r i t t e n   t o   t h e   d i s k . < / d d > \ 
+                 < d t > S e e k < / d t > \ 
+                 < d d > R a t e   a t   w h i c h   t h e   b r o k e r   s w i t c h e s   p o s i t i o n   w h i l e   r e a d i n g   o r   \ 
+                   w r i t i n g   t o   d i s k . < / d d > \ 
+                 < d t > S y n c < / d t > \ 
+                 < d d > R a t e   a t   w h i c h   t h e   b r o k e r   i n v o k e s   < c o d e > f s y n c ( ) < / c o d e >   t o   e n s u r e   \ 
+                   d a t a   i s   f l u s h e d   t o   d i s k . < / d d > \ 
+                 < d t > R e o p e n < / d t > \ 
+                 < d d > R a t e   a t   w h i c h   t h e   b r o k e r   r e c y c l e s   f i l e   h a n d l e s   i n   o r d e r   t o   s u p p o r t   \ 
+                   m o r e   q u e u e s   t h a n   i t   h a s   f i l e   h a n d l e s .   I f   t h i s   o p e r a t i o n   i s   o c c u r r i n g   \ 
+                   f r e q u e n t l y   y o u   m a y   g e t   a   p e r f o r m a n c e   b o o s t   f r o m   i n c r e a s i n g   t h e   n u m b e r   \ 
+                   o f   f i l e   h a n d l e s   a v a i l a b l e . < / d d > \ 
+             < / d l > ' , 
+ 
+         ' m n e s i a - t r a n s a c t i o n s ' : 
+         ' R a t e   a t   w h i c h   M n e s i a   t r a n s a c t i o n s   a r e   i n i t i a t e d   o n   t h i s   n o d e   ( t h i s   n o d e   \ 
+           w i l l   a l s o   t a k e   p a r t   i n   M n e s i a   t r a n s a c t i o n s   i n i t i a t e d   o n   o t h e r   n o d e s ) . \ 
+             < d l > \ 
+                 < d t > R A M   o n l y < / d t > \ 
+                 < d d > R a t e   a t   w h i c h   R A M - o n l y   t r a n s a c t i o n s   t a k e   p l a c e   ( e . g .   c r e a t i o n   /   \ 
+                         d e l e t i o n   o f   t r a n s i e n t   q u e u e s ) . < / d d > \ 
+                 < d t > D i s k < / d t > \ 
+                 < d d > R a t e   a t   w h i c h   d i s k   ( a n d   R A M )   t r a n s a c t i o n s   t a k e   p l a c e   ( . e . g   \ 
+                         c r e a t i o n   /   d e l e t i o n   o f   d u r a b l e   q u e u e s ) . < / d d > \ 
+             < / d l > ' , 
+ 
+         ' p e r s i s t e r - o p e r a t i o n s - m s g ' : 
+         ' R a t e   a t   w h i c h   p e r - m e s s a g e   p e r s i s t e r   o p e r a t i o n s   t a k e   p l a c e   o n   t h i s   n o d e .   S e e   \ 
+           < a   h r e f = " h t t p : / / w w w . r a b b i t m q . c o m / p e r s i s t e n c e - c o n f . h t m l "   t a r g e t = " _ b l a n k " > h e r e < / a >   \ 
+           f o r   m o r e   i n f o r m a t i o n   o n   t h e   p e r s i s t e r .   \ 
+             < d l > \ 
+                 < d t > Q I   J o u r n a l < / d t > \ 
+                 < d d > R a t e   a t   w h i c h   m e s s a g e   i n f o r m a t i o n   ( p u b l i s h e s ,   d e l i v e r i e s   a n d   \ 
+                         a c k n o w l e d g e m e n t s )   i s   w r i t t e n   t o   q u e u e   i n d e x   j o u r n a l s . < / d d > \ 
+                 < d t > S t o r e   R e a d < / d t > \ 
+                 < d d > R a t e   a t   w h i c h   m e s s a g e s   a r e   r e a d   f r o m   t h e   m e s s a g e   s t o r e . < / d d > \ 
+                 < d t > S t o r e   W r i t e < / d t > \ 
+                 < d d > R a t e   a t   w h i c h   m e s s a g e s   a r e   w r i t t e n   t o   t h e   m e s s a g e   s t o r e . < / d d > \ 
+             < / d l > ' , 
+ 
+         ' p e r s i s t e r - o p e r a t i o n s - b u l k ' : 
+         ' R a t e   a t   w h i c h   w h o l e - f i l e   p e r s i s t e r   o p e r a t i o n s   t a k e   p l a c e   o n   t h i s   n o d e .   S e e   \ 
+           < a   h r e f = " h t t p : / / w w w . r a b b i t m q . c o m / p e r s i s t e n c e - c o n f . h t m l "   t a r g e t = " _ b l a n k " > h e r e < / a >   \ 
+           f o r   m o r e   i n f o r m a t i o n   o n   t h e   p e r s i s t e r .   \ 
+             < d l > \ 
+                 < d t > Q I   R e a d < / d t > \ 
+                 < d d > R a t e   a t   w h i c h   q u e u e   i n d e x   s e g m e n t   f i l e s   a r e   r e a d . < / d d > \ 
+                 < d t > Q I   W r i t e < / d t > \ 
+                 < d d > R a t e   a t   w h i c h   q u e u e   i n d e x   s e g m e n t   f i l e s   a r e   w r i t t e n .   < / d d > \ 
+             < / d l > ' , 
+ 
+         ' g c - o p e r a t i o n s ' : 
+         ' R a t e   a t   w h i c h   g a r b a g e   c o l l e c t i o n   o p e r a t i o n s   t a k e   p l a c e   o n   t h i s   n o d e . ' , 
+ 
+         ' g c - b y t e s ' : 
+         ' R a t e   a t   w h i c h   m e m o r y   i s   r e c l a i m e d   b y   t h e   g a r b a g e   c o l l e c t o r   o n   t h i s   n o d e . ' , 
+ 
+         ' c o n t e x t - s w i t c h e s - o p e r a t i o n s ' : 
+         ' R a t e   a t   w h i c h   r u n t i m e   c o n t e x t   s w i t c h i n g   t a k e s   p l a c e   o n   t h i s   n o d e . ' , 
+ 
+         ' p r o c e s s - r e d u c t i o n s ' : 
+         ' R a t e   a t   w h i c h   r e d u c t i o n s   t a k e   p l a c e   o n   t h i s   p r o c e s s . ' 
+ } ; 
+ 
+ / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / 
+ / /                                                                                                                                               / / 
+ / /   M o s t l y   c o n s t a n t ,   t y p i c a l l y   g e t   s e t   o n c e   a t   s t a r t u p   ( o r   r a r e l y   a n y w a y )   / / 
+ / /                                                                                                                                               / / 
+ / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / 
+ 
+ / /   A l l   t h e s e   a r e   t o   d o   w i t h   h i d i n g   U I   e l e m e n t s   i f 
+ v a r   r a t e s _ m o d e ;                                     / /   . . . t h e r e   a r e   n o   f i n e   s t a t s 
+ v a r   u s e r _ a d m i n i s t r a t o r ;                     / /   . . . u s e r   i s   n o t   a n   a d m i n 
+ v a r   i s _ u s e r _ p o l i c y m a k e r ;                   / /   . . . u s e r   i s   n o t   a   p o l i c y m a k e r 
+ v a r   u s e r _ m o n i t o r ;                                 / /   . . . u s e r   c a n n o t   m o n i t o r 
+ v a r   n o d e s _ i n t e r e s t i n g ;                       / /   . . . w e   a r e   n o t   i n   a   c l u s t e r 
+ v a r   v h o s t s _ i n t e r e s t i n g ;                     / /   . . . t h e r e   i s   o n l y   o n e   v h o s t 
+ v a r   r a b b i t _ v e r s i o n s _ i n t e r e s t i n g ;   / /   . . . a l l   c l u s t e r   n o d e s   r u n   t h e   s a m e   v e r s i o n 
+ 
+ / /   E x t e n s i o n s   w r i t e   t o   t h i s ,   t h e   d i s p a t c h e r   m a k e r   r e a d s   i t 
+ v a r   d i s p a t c h e r _ m o d u l e s   =   [ ] ; 
+ 
+ / /   W e   n e e d   t o   k n o w   w h e n   a l l   e x t e n s i o n   s c r i p t   f i l e s   h a v e   l o a d e d 
+ v a r   e x t e n s i o n _ c o u n t ; 
+ 
+ / /   T h e   d i s p a t c h e r   n e e d s   a c c e s s   t o   t h e   S a m m y   a p p 
+ v a r   a p p ; 
+ 
+ / /   U s e d   f o r   t h e   n e w   e x c h a n g e   f o r m ,   a n d   t o   d i s p l a y   b r o k e n   e x c h a n g e   t y p e s 
+ v a r   e x c h a n g e _ t y p e s ; 
+ 
+ / /   U s e d   f o r   a c c e s s   c o n t r o l 
+ v a r   u s e r _ t a g s ; 
+ v a r   u s e r ; 
+ 
+ / /   S e t   u p   t h e   a b o v e   v a r s 
+ f u n c t i o n   s e t u p _ g l o b a l _ v a r s ( )   { 
+         v a r   o v e r v i e w   =   J S O N . p a r s e ( s y n c _ g e t ( ' / o v e r v i e w ' ) ) ; 
+         r a t e s _ m o d e   =   o v e r v i e w . r a t e s _ m o d e ; 
+         u s e r _ t a g s   =   e x p a n d _ u s e r _ t a g s ( u s e r . t a g s . s p l i t ( " , " ) ) ; 
+         u s e r _ a d m i n i s t r a t o r   =   j Q u e r y . i n A r r a y ( " a d m i n i s t r a t o r " ,   u s e r _ t a g s )   ! =   - 1 ; 
+         i s _ u s e r _ p o l i c y m a k e r   =   j Q u e r y . i n A r r a y ( " p o l i c y m a k e r " ,   u s e r _ t a g s )   ! =   - 1 ; 
+         u s e r _ m o n i t o r   =   j Q u e r y . i n A r r a y ( " m o n i t o r i n g " ,   u s e r _ t a g s )   ! =   - 1 ; 
+         e x c h a n g e _ t y p e s   =   o v e r v i e w . e x c h a n g e _ t y p e s . m a p ( f u n c t i o n ( x t )   {   r e t u r n   x t . n a m e ;   } ) ; 
+ 
+         c l u s t e r _ n a m e   =   f m t _ e s c a p e _ h t m l ( o v e r v i e w . c l u s t e r _ n a m e ) ; 
+         $ ( ' # l o g o u t ' ) . b e f o r e ( 
+             ' < l i > C l u s t e r   '   +   ( u s e r _ a d m i n i s t r a t o r   ?     ' < a   h r e f = " # / c l u s t e r - n a m e " > '   +   c l u s t e r _ n a m e   +   ' < / a > '   :   c l u s t e r _ n a m e )   +   ' < / l i > ' 
+         ) ; 
+ 
+         u s e r _ n a m e   =   f m t _ e s c a p e _ h t m l ( u s e r . n a m e ) ; 
+         $ ( ' # h e a d e r   # l o g o u t ' ) . p r e p e n d ( 
+             ' U s e r   '   +   ( u s e r _ a d m i n i s t r a t o r   ?     ' < a   h r e f = " # / u s e r s / '   +   u s e r _ n a m e   +   ' " > '   +   u s e r _ n a m e   +   ' < / a > '   :   u s e r _ n a m e ) 
+         ) ; 
+ 
+         $ ( ' # v e r s i o n s ' ) . h t m l ( 
+             ' < a b b r   t i t l e = " A v a i l a b l e   e x c h a n g e   t y p e s :   '   +   e x c h a n g e _ t y p e s . j o i n ( " ,   " )   +   ' " > '   +   f m t _ e s c a p e _ h t m l ( o v e r v i e w . r a b b i t m q _ v e r s i o n )   +   ' < / a b b r > '   + 
+             ' < a b b r   t i t l e = " '   +   f m t _ e s c a p e _ h t m l ( o v e r v i e w . e r l a n g _ f u l l _ v e r s i o n )   +   ' " > E r l a n g   '   +   f m t _ e s c a p e _ h t m l ( o v e r v i e w . e r l a n g _ v e r s i o n )   +   ' < / a b b r > ' 
+         ) ; 
+         n o d e s _ i n t e r e s t i n g   =   f a l s e ; 
+         r a b b i t _ v e r s i o n s _ i n t e r e s t i n g   =   f a l s e ; 
+         i f   ( u s e r _ m o n i t o r )   { 
+                 v a r   n o d e s   =   J S O N . p a r s e ( s y n c _ g e t ( ' / n o d e s ' ) ) ; 
+                 i f   ( n o d e s . l e n g t h   >   1 )   { 
+                         n o d e s _ i n t e r e s t i n g   =   t r u e ; 
+                         v a r   v   =   ' ' ; 
+                         f o r   ( v a r   i   =   0 ;   i   <   n o d e s . l e n g t h ;   i + + )   { 
+                                 v a r   v 1   =   f m t _ r a b b i t _ v e r s i o n ( n o d e s [ i ] . a p p l i c a t i o n s ) ; 
+                                 i f   ( v 1   ! =   ' u n k n o w n ' )   { 
+                                         i f   ( v   ! =   ' '   & &   v   ! =   v 1 )   r a b b i t _ v e r s i o n s _ i n t e r e s t i n g   =   t r u e ; 
+                                         v   =   v 1 ; 
+                                 } 
+                         } 
+                 } 
+         } 
+         v h o s t s _ i n t e r e s t i n g   =   J S O N . p a r s e ( s y n c _ g e t ( ' / v h o s t s ' ) ) . l e n g t h   >   1 ; 
+         c u r r e n t _ v h o s t   =   g e t _ p r e f ( ' v h o s t ' ) ; 
+         e x c h a n g e _ t y p e s   =   o v e r v i e w . e x c h a n g e _ t y p e s ; 
+ } 
+ 
+ f u n c t i o n   e x p a n d _ u s e r _ t a g s ( t a g s )   { 
+         v a r   n e w _ t a g s   =   [ ] ; 
+         f o r   ( v a r   i   =   0 ;   i   <   t a g s . l e n g t h ;   i + + )   { 
+                 v a r   t a g   =   t a g s [ i ] ; 
+                 n e w _ t a g s . p u s h ( t a g ) ; 
+                 s w i t c h   ( t a g )   {   / /   N o t e   d e l i b e r a t e   f a l l - t h r o u g h 
+                         c a s e   " a d m i n i s t r a t o r " :   n e w _ t a g s . p u s h ( " m o n i t o r i n g " ) ; 
+                                                                     n e w _ t a g s . p u s h ( " p o l i c y m a k e r " ) ; 
+                         c a s e   " m o n i t o r i n g " :         n e w _ t a g s . p u s h ( " m a n a g e m e n t " ) ; 
+                                                                     b r e a k ; 
+                         c a s e   " p o l i c y m a k e r " :       n e w _ t a g s . p u s h ( " m a n a g e m e n t " ) ; 
+                         d e f a u l t :                             b r e a k ; 
+                 } 
+         } 
+         r e t u r n   n e w _ t a g s ; 
+ } 
+ 
+ / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / 
+ / /                                                                                                 / / 
+ / /   C h a n g e   f r e q u e n t l y   ( t y p i c a l l y   e v e r y   " n e w   p a g e " )   / / 
+ / /                                                                                                 / / 
+ / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / 
+ 
+ / /   W h i c h   t o p   l e v e l   t e m p l a t e   w e ' r e   s h o w i n g 
+ v a r   c u r r e n t _ t e m p l a t e ; 
+ 
+ / /   W h i c h   J S O N   r e q u e s t s   d o   w e   n e e d   t o   p o p u l a t e   i t 
+ v a r   c u r r e n t _ r e q s ; 
+ 
+ / /   A n d   w h i c h   o f   t h o s e   h a v e   y e t   t o   r e t u r n   ( s o   w e   c a n   c a n c e l   t h e m   w h e n 
+ / /   c h a n g i n g   c u r r e n t _ t e m p l a t e ) . 
+ v a r   o u t s t a n d i n g _ r e q s   =   [ ] ; 
+ 
+ / /   W h i c h   t a b   i s   h i g h l i g h t e d 
+ v a r   c u r r e n t _ h i g h l i g h t ; 
+ 
+ / /   W h i c h   v h o s t   a r e   w e   l o o k i n g   a t 
+ v a r   c u r r e n t _ v h o s t   =   ' ' ; 
+ 
+ / /   W h a t   i s   o u r   c u r r e n t   s o r t   o r d e r 
+ v a r   c u r r e n t _ s o r t ; 
+ v a r   c u r r e n t _ s o r t _ r e v e r s e   =   f a l s e ; 
+ 
+ v a r   c u r r e n t _ f i l t e r   =   ' ' ; 
+ v a r   c u r r e n t _ f i l t e r _ r e g e x _ o n   =   f a l s e ; 
+ 
+ v a r   c u r r e n t _ f i l t e r _ r e g e x ; 
+ v a r   c u r r e n t _ t r u n c a t e ; 
+ 
+ / /   T h e   t i m e r   o b j e c t   f o r   a u t o - u p d a t e s ,   a n d   h o w   o f t e n   i t   g o e s   o f f 
+ v a r   t i m e r ; 
+ v a r   t i m e r _ i n t e r v a l ; 
+ 
+ / /   W h e n   d i d   w e   l a s t   c o n n e c t   s u c c e s s f u l l y   ( f o r   t h e   " c o u l d   n o t   c o n n e c t "   e r r o r ) 
+ v a r   l a s t _ s u c c e s s f u l _ c o n n e c t ; 
+ 
+ / /   E v e r y   2 0 0   u p d a t e s   w i t h o u t   u s e r   i n t e r a c t i o n   w e   d o   a   f u l l   r e f r e s h ,   t o 
+ / /   w o r k   a r o u n d   m e m o r y   l e a k s   i n   b r o w s e r   D O M   i m p l e m e n t a t i o n s . 
+ / /   T O D O :   m a y b e   w e   d o n ' t   n e e d   t h i s   a n y   m o r e ? 
+ v a r   u p d a t e _ c o u n t e r   =   0 ; 
+ 
+ / /   H o l d s   c h a r t   d a t a   i n   b e t w e e n   w r i t i n g   t h e   d i v   i n   a n   e j s   a n d   r e n d e r i n g 
+ / /   t h e   c h a r t . 
+ v a r   c h a r t _ d a t a   =   { } ; 
+ 
+ / /   w h e n e v e r   a   U I   r e q u e s t s   a   p a g e   t h a t   d o e s n ' t   e x i s t 
+ / /   b e c a u s e   t h i n g s   w e r e   d e l e t e d   b e t w e e n   r e f r e s h e s 
+ v a r   l a s t _ p a g e _ o u t _ o f _ r a n g e _ e r r o r   =   0 ; 
+   $       http://localhost:15672/js/global.js                      ‡!«!ÿÿÿÿ)      timer_interval#   current_highlight   ALL_ARGS#   nodes_interesting   user_tags!   current_template   current_filter/   current_filter_regex_on	   HELP   timer   current_sort/   last_successful_connect)   current_filter_regex   chart_data	   user!   outstanding_reqs!   expand_user_tags7   rabbit_versions_interesting   app%   vhosts_interesting   IMPLICIT_ARGS   update_counter   map   exchange_types   NAVIGATION   rates_mode   k   user_monitor!   current_truncate   CHART_PERIODS   KNOWN_ARGS   current_reqs)   current_sort_reverse   COLUMNS   current_vhost9   last_page_out_of_range_error%   user_administrator#   setup_global_vars%   dispatcher_modules'   is_user_policymaker   extension_count)   )   «+’H!«!          map ˜   û   Œ   û             ÿÿÿÿ       Ê5!«!       #   setup_global_vars                        Xm  ½t  >m  ½t                          Œ!«!ÿÿÿÿ      overview   nodes   v   i   v1          «+’H!«!       C   setup_global_vars/exchange_types<c    9                  o  o  ùn  o                            Œ!«!ÿÿÿÿ      xt         «+’Hš˜;ø   
+   	                       T  5    ™˜@¸°È˜± 	   name    ÿÿÿÿ   Ê5š˜;ø         «   =   3  f                ™     V š    ¸   
+š      =   : : W   QÖ   V   5   ›   QÖ   š      š   5   ¸	   
+=
+   : : ›   QÖ   š   ¸   
+=   š   : ×ÿ›   QÖ   š   ¸   
+=   š   : ×ÿ›   QÖ   š   ¸   
+=   š   : ×ÿ›   QÖ   V   5   ¸   
+‚    : ›   QÖ   š      V   5   : ›   Qš      =   : ¸   
+=   š       æ5   =   š   =      æ8   š   æ9   =   ç QÖ   š      š   5   : ›   Qš      =    : ¸!   
+="   š   ,   æG   =#   š   =$   š   =      æM   š   æN   ç Qš      =%   : ¸&   
+='   š   ¸(   
+=)   : =$   š      V   5*   : =+   š      V   5,   : =-   š      V   5.   : =/   ç QÖ0   B›0   QÖ1   B›1   Qš     æn   š    ¸   
+š      =2   : : W  QV  Ù3   ?×   æv   Ö0   C›0   Q=4   W  Q>W  Q —   mx   š5   5   V  V  756   : W  QV  =7   Q   æ~   V  =4   E   æ€   QV  V  æ      æ‚   Ö1   C›1   Qæ„   V  W  Qæ„   V  ìêW  QQã…   V  V  Ù3   Zÿÿÿæ‰   Ö8   š    ¸   
+š      =9   : : Ù3   ?›8   QÖ:   š;   ;   =<   : ›:   QÖ   V   5   ›   Q™ ˜¸°Û˜°›ÿÿÿú°È ˜¸°Ô ˜¸°å˜'°›ÿÿÿå°É ˜¸°Û˜°Ì ˜¸°Û˜°Ì ˜¸°Û˜°Ì ˜¸°Ú˜)°É  ˜¸°Ø˜°É ˜¸°Ù Êö¨€ ˜°¤   ˜¸°Ù˜°É ˜¸°Ù Êü¨€ ˜°¤   ˜¸°Ù Ö˜A°İ˜°Ê Ó˜°İ˜>°Ê¨€ ˜°¤   ˜¸°Ì ˜¸°Ì ˜¸°Ê ˜¸°Û˜°›ÿÿÿú°È ˜¸°ËÊ ˜¸°Ì ˜¸°Ê ˜˜¸°&€  —€  …€  «¦˜­€ # ˜¸°à ˜¸°ÊÊ ˜¸°ãÊ˜¸°Ñ ˜¸°Î¨€ #˜.¸°Í¨€ )¨€ #˜¾°Ø¨€ ,˜¸°à˜ °›ÿÿÿú°Ğ ˜¸°Ô˜°É ˜¸°Ô ° 	   JSON   parse   sync_get   /overview   rates_mode   user_tags!   expand_user_tags	   user	   tags   split   ,%   user_administrator   jQuery   inArray   administrator'   is_user_policymaker   policymaker   user_monitor   monitoring   exchange_types   map   cluster_name   fmt_escape_html   $   #logout   before   <li>Cluster 3   <a href="#/cluster-name">	   </a>   </li>   user_name	   name   #header #logout   prepend   User #   <a href="#/users/   ">   #versions	   htmlO   <abbr title="Available exchange types: 	   join   , !   rabbitmq_version)   </abbr><abbr title="'   erlang_full_version   ">Erlang    erlang_version   </abbr>#   nodes_interesting7   rabbit_versions_interesting   /nodes   length   %   fmt_rabbit_version   applications   unknown%   vhosts_interesting   /vhosts   current_vhost   get_pref   vhostÊ5!«!       !   expand_user_tags  1                   Øt  w  ¿t  w                           Œ!«!ÿÿÿÿ   	   tags   new_tags   i   tag        «+’Hš˜;ø          ú        Ÿ                      Z    W   Q>W  Q ç   m   T  V  7W  QV   ¸    
+V  ç QV  x=   Hy1   æ   =   HyM   æ   =   HyZ   æ	   zi   æ	   V   ¸    
+=   ç QV   ¸    
+=   ç Qæ   V   ¸    
+=   ç Q(   æ   V   ¸    
+=   ç Qæ      æ   V  ìêW  QQã   V  T  Ù   ÿÿÿæ   V   ™ ˜¸°Ê ˜	˜¸°&€  ç€  Õ€  ú¦˜­€ 3 ˜¸°Í ˜¸°Ï˜	°¤˜¸°t€  §ÈxÑxÑx Ô ˜"¸°Ğ˜	°¤˜"¸°Ğ˜	°É ˜"¸°Ğ˜	°¤˜"¸°`Ê ˜"¸°Ğ˜	°É ˜"¸°`Ê¨€ 3˜%¸°Í¨€ >¨€ 3˜¾°×¨€ ?˜¸°¤± 	   push   administrator   monitoring   policymaker   management   length    ÿÿÿÿ   Ê5!«!    	   !«!%   alternate-exchangeŠ!«!       !«!   short!«!   AE!«!	   type!«!   string    !«!   x-message-ttlŠ!«!       !«!   short!«!   TTL!«!	   type!«!   int    !«!   x-expiresŠ!«!       !«!   short!«!   Exp!«!	   type!«!   int    !«!   x-max-lengthŠ!«!       !«!   short!«!   Lim!«!	   type!«!   int    !«!%   x-max-length-bytesŠ!«!       !«!   short!«!   Lim B!«!	   type!«!   int    !«!-   x-dead-letter-exchangeŠ!«!       !«!   short!«!   DLX!«!	   type!«!   string    !«!3   x-dead-letter-routing-keyŠ!«!       !«!   short!«!   DLK!«!	   type!«!   string    !«!-   x-queue-master-locatorŠ!«!       !«!   short!«!   ML!«!	   type!«!   string    !«!   x-max-priorityŠ!«!       !«!   short!«!   Pri!«!	   type!«!   int       !«!       !«!   durableŠ!«!       !«!   short!«!   D!«!	   type!«!   boolean    !«!   auto-deleteŠ!«!       !«!   short!«!   AD!«!	   type!«!   boolean    !«!   exclusiveŠ!«!       !«!   short!«!	   Excl!«!	   type!«!   boolean    !«!   internalŠ!«!       !«!   short!«!   I!«!	   type!«!   boolean       !«!            !«!       !«!   OverviewŠ!«!      !«!   #/!«!   management    !«!   ConnectionsŠ!«!      !«!   #/connections!«!   management    !«!   ChannelsŠ!«!      !«!   #/channels!«!   management    !«!   ExchangesŠ!«!      !«!   #/exchanges!«!   management    !«!   QueuesŠ!«!      !«!   #/queues!«!   management    !«!   AdminŠ!«!      Š!«!       !«!   UsersŠ!«!      !«!   #/users!«!   administrator    !«!   Virtual HostsŠ!«!      !«!   #/vhosts!«!   administrator    !«!   PoliciesŠ!«!      !«!   #/policies!«!   management    !«!   ClusterŠ!«!      !«!   #/cluster-name!«!   administrator        !«!   management       !«!       !«!	   60|5!«!   Last minute!«!   600|5!«!!   Last ten minutes!«!   3600|60!«!   Last hour!«!   28800|600!«!!   Last eight hours!«!   86400|1800!«!   Last day   !«!       !«!   exchangesŠ!«!       !«!   OverviewŠ!«!      Š!«!      !«!	   type!«!	   Type!«!    Š!«!      !«!   features!«!-   Features (with policy)!«!    Š!«!      !«!%   features_no_policy!«!)   Features (no policy)ˆ!«!    Š!«!      !«!   policy!«!   Policyˆ!«!        !«!   Message ratesŠ!«!      Š!«!      !«!   rate-in!«!   rate in!«!    Š!«!      !«!   rate-out!«!   rate out!«!            !«!   queuesŠ!«!       !«!   OverviewŠ!«!      Š!«!      !«!   features!«!-   Features (with policy)!«!    Š!«!      !«!%   features_no_policy!«!)   Features (no policy)ˆ!«!    Š!«!      !«!   policy!«!   Policyˆ!«!    Š!«!      !«!   consumers!«!   Consumer countˆ!«!    Š!«!      !«!)   consumer_utilisation!«!)   Consumer utilisationˆ!«!    Š!«!      !«!   state!«!   State!«!        !«!   MessagesŠ!«!      Š!«!      !«!   msgs-ready!«!   Ready!«!    Š!«!      !«!   msgs-unacked!«!   Unacknowledged!«!    Š!«!      !«!   msgs-ram!«!   In memoryˆ!«!    Š!«!      !«!   msgs-persistent!«!   Persistentˆ!«!    Š!«!      !«!   msgs-total!«!   Total!«!        !«!   Message bytesŠ!«!      Š!«!      !«!   msg-bytes-ready!«!   Readyˆ!«!    Š!«!      !«!#   msg-bytes-unacked!«!   Unacknowledgedˆ!«!    Š!«!      !«!   msg-bytes-ram!«!   In memoryˆ!«!    Š!«!      !«!)   msg-bytes-persistent!«!   Persistentˆ!«!    Š!«!      !«!   msg-bytes-total!«!   Totalˆ!«!        !«!   Message ratesŠ!«!      Š!«!      !«!   rate-incoming!«!   incoming!«!    Š!«!      !«!   rate-deliver!«!   deliver / get!«!    Š!«!      !«!   rate-redeliver!«!   redeliveredˆ!«!    Š!«!      !«!   rate-ack!«!   ack!«!            !«!   channelsŠ!«!       !«!   OverviewŠ!«!      Š!«!      !«!	   user!«!   User name!«!    Š!«!      !«!	   mode!«!	   Mode!«!    Š!«!      !«!   state!«!   State!«!        !«!   DetailsŠ!«!      Š!«!      !«!!   msgs-unconfirmed!«!   Unconfirmed!«!    Š!«!      !«!   prefetch!«!   Prefetch!«!    Š!«!      !«!   msgs-unacked!«!   Unacked!«!        !«!   TransactionsŠ!«!      Š!«!      !«!!   msgs-uncommitted!«!!   Msgs uncommittedˆ!«!    Š!«!      !«!!   acks-uncommitted!«!!   Acks uncommittedˆ!«!        !«!   Message ratesŠ!«!      Š!«!      !«!   rate-publish!«!   publish!«!    Š!«!      !«!   rate-confirm!«!   confirm!«!    Š!«!      !«!   rate-return!«!%   return (mandatory)ˆ!«!    Š!«!      !«!   rate-deliver!«!   deliver / get!«!    Š!«!      !«!   rate-redeliver!«!   redeliveredˆ!«!    Š!«!      !«!   rate-ack!«!   ack!«!            !«!   connectionsŠ!«!       !«!   OverviewŠ!«!      Š!«!      !«!	   user!«!   User name!«!    Š!«!      !«!   state!«!   State!«!        !«!   DetailsŠ!«!      Š!«!      !«!   ssl!«!   SSL / TLS!«!    Š!«!      !«!   ssl_info!«!   SSL Detailsˆ!«!    Š!«!      !«!   protocol!«!   Protocol!«!    Š!«!      !«!   channels!«!   Channels!«!    Š!«!      !«!   channel_max!«!   Channel maxˆ!«!    Š!«!      !«!   frame_max!«!   Frame maxˆ!«!    Š!«!      !«!   auth_mechanism!«!   Auth mechanismˆ!«!    Š!«!      !«!   client!«!   Clientˆ!«!        !«!   NetworkŠ!«!      Š!«!      !«!   from_client!«!   From client!«!    Š!«!      !«!   to_client!«!   To client!«!    Š!«!      !«!   heartbeat!«!   Heartbeatˆ!«!    Š!«!      !«!   connected_at!«!   Connected atˆ!«!            !«!   vhostsŠ!«!       !«!   MessagesŠ!«!      Š!«!      !«!   msgs-ready!«!   Ready!«!    Š!«!      !«!   msgs-unacked!«!   Unacknowledged!«!    Š!«!      !«!   msgs-total!«!   Total!«!        !«!   NetworkŠ!«!      Š!«!      !«!   from_client!«!   From client!«!    Š!«!      !«!   to_client!«!   To client!«!        !«!   Message ratesŠ!«!      Š!«!      !«!   rate-publish!«!   publish!«!    Š!«!      !«!   rate-deliver!«!   deliver / get!«!            !«!   overviewŠ!«!       !«!   StatisticsŠ!«!      Š!«!      !«!!   file_descriptors!«!!   File descriptors!«!    Š!«!      !«!%   socket_descriptors!«!%   Socket descriptors!«!    Š!«!      !«!!   erlang_processes!«!!   Erlang processes!«!    Š!«!      !«!   memory!«!   Memory!«!    Š!«!      !«!   disk_space!«!   Disk space!«!        !«!   GeneralŠ!«!      Š!«!      !«!   uptime!«!   Uptime!«!    Š!«!      !«!	   info!«!	   Info!«!    Š!«!      !«!   reset_stats!«!   Reset stats!«!               !«!    9   !«!)   exchange-auto-delete!«!9  If yes, the exchange will delete itself after at least one queue or exchange has been bound to this one, and then all queues or exchanges have been unbound.!«!#   exchange-internal!«!ã   If yes, clients cannot publish to this exchange directly. It can only be used with exchange to exchange bindings.!«!%   exchange-alternate!«!¡  If messages to this exchange cannot otherwise be routed, send them to the alternate exchange named here.<br/>(Sets the "<a target="_blank" href="http://rabbitmq.com/ae.html">alternate-exchange</a>" argument.)!«!#   queue-message-ttl!«!£  How long a message published to a queue can live before it is discarded (milliseconds).<br/>(Sets the "<a target="_blank" href="http://rabbitmq.com/ttl.html#per-queue-message-ttl">x-message-ttl</a>" argument.)!«!   queue-expires!«!  How long a queue can be unused for before it is automatically deleted (milliseconds).<br/>(Sets the "<a target="_blank" href="http://rabbitmq.com/ttl.html#queue-ttl">x-expires</a>" argument.)!«!!   queue-max-length!«!‡  How many (ready) messages a queue can contain before it starts to drop them from its head.<br/>(Sets the "<a target="_blank" href="http://rabbitmq.com/maxlength.html">x-max-length</a>" argument.)!«!-   queue-max-length-bytes!«!¥  Total body size for ready messages a queue can contain before it starts to drop them from its head.<br/>(Sets the "<a target="_blank" href="http://rabbitmq.com/maxlength.html">x-max-length-bytes</a>" argument.)!«!#   queue-auto-delete!«!ó   If yes, the queue will delete itself after at least one consumer has connected, and then all consumers have disconnected.!«!5   queue-dead-letter-exchange!«!Ÿ  Optional name of an exchange to which messages will be republished if they are rejected or expire.<br/>(Sets the "<a target="_blank" href="http://rabbitmq.com/dlx.html">x-dead-letter-exchange</a>" argument.)!«!;   queue-dead-letter-routing-key!«!û  Optional replacement routing key to use when a message is dead-lettered. If this is not set, the message's original routing key will be used.<br/>(Sets the "<a target="_blank" href="http://rabbitmq.com/dlx.html">x-dead-letter-routing-key</a>" argument.)!«!%   queue-max-priority!«!Á  Maximum number of priority levels for the queue to support; if not set, the queue will not support message priorities.<br/>(Sets the "<a target="_blank" href="http://rabbitmq.com/priority.html">x-max-priority</a>" argument.)!«!   queue-lazy!«!W  Set the queue into lazy mode, keeping as many messages as possible on disk to reduce RAM usage; if not set, the queue will keep an in-memory cache to deliver messages as fast as possible.<br/>(Sets the "<a target="_blank" href="https://www.rabbitmq.com/lazy-queues.html">x-queue-mode</a>" argument.)!«!)   queue-master-locator!«!ñ  Set the queue into master location mode, determining the rule by which the queue master is located when declared on a cluster of nodes.<br/>(Sets the "<a target="_blank" href="https://www.rabbitmq.com/ha.html">x-queue-master-locator</a>" argument.)!«!   queue-messages!«!'  <p>Message counts.</p><p>Note that "in memory" and "persistent" are not mutually exclusive; persistent messages can be in memory as well as on disc, and transient messages can be paged out if memory is tight. Non-durable queues will consider all messages to be transient.</p>!«!1   queue-message-body-bytes!«!  <p>The sum total of the sizes of the message bodies in this queue. This only counts message bodies; it does not include message properties (including headers) or metadata used by the queue.</p><p>Note that "in memory" and "persistent" are not mutually exclusive; persistent messages can be in memory as well as on disc, and transient messages can be paged out if memory is tight. Non-durable queues will consider all messages to be transient.</p><p>If a message is routed to multiple queues on publication, its body will be stored only once (in memory and on disk) and shared between queues. The value shown here does not take account of this effect.</p>!«!)   queue-process-memory!«!  Total memory used by this queue process. This does not include in-memory message bodies (which may be shared between queues and will appear in the global "binaries" memory) but does include everything else.!«!5   queue-consumer-utilisation!«!Ã  Fraction of the time that the queue is able to immediately deliver messages to consumers. If this number is less than 100% you may be able to deliver messages faster if:         <ul>           <li>There were more consumers or</li>           <li>The consumers were faster or</li>           <li>The consumers had a higher prefetch count</li>         </ul>!«!'   internal-users-only!«!  Only users within the internal RabbitMQ database are shown here. Other users (e.g. those authenticated over LDAP) will not appear.!«!%   export-definitions!«!¡  The definitions consist of users, virtual hosts, permissions, parameters, exchanges, queues and bindings. They do not include the contents of queues or the cluster name. Exclusive queues will not be exported.!«!1   export-definitions-vhost!«!Ï   The definitions exported for a single virtual host consist of exchanges, queues, bindings and policies.!«!%   import-definitions!«!5  The definitions that are imported will be merged with the current definitions. If an error occurs during import, any changes made will not be rolled back.!«!1   import-definitions-vhost!«!­   For a single virtual host, only exchanges, queues, bindings and policies are imported.!«!/   exchange-rates-incoming!«!±   The incoming rate is the rate at which messages are published directly to this exchange.!«!/   exchange-rates-outgoing!«!İ   The outgoing rate is the rate at which messages enter queues, having been published directly to this exchange.!«!   channel-mode!«!é  Channel guarantee mode. Can be one of the following, or neither:<br/>       <dl>         <dt><abbr title="Confirm">C</abbr> &ndash; <a target="_blank" href="http://www.rabbitmq.com/confirms.html">confirm</a></dt>         <dd>Channel will send streaming publish confirmations.</dd>         <dt><abbr title="Transactional">T</abbr> &ndash; <a target="_blank" href="http://www.rabbitmq.com/amqp-0-9-1-reference.html#class.tx">transactional</a></dt>         <dd>Channel is transactional.</dd>       </dl>!«!!   channel-prefetch!«!ã  Channel prefetch counts.        <p>          Each channel can have two prefetch counts: A per-consumer count, which          will limit each new consumer created on the channel, and a global          count, which is shared between all consumers on the channel.       </p>        <p>          This column shows one, the other, or both limits if they are set.        </p>!«!!   file-descriptors!«!7  <p>File descriptor count and limit, as reported by the operating       system. The count includes network sockets and file handles.</p>       <p>To optimize disk access RabbitMQ uses as many free descriptors as are       available, so the count may safely approach the limit.       However, if most of the file descriptors are used by sockets then       persister performance will be negatively impacted.</p>       <p>To change the limit on Unix / Linux, use "ulimit -n". To change       the limit on Windows, set the ERL_MAX_PORTS environment variable</p>       <p>To report used file handles on Windows, handle.exe from       sysinternals must be installed in your path. You can download it       <a target="_blank" href="http://technet.microsoft.com/en-us/sysinternals/bb896655">here</a>.</p>!«!%   socket-descriptors!«!7  The network sockets count and limit managed by RabbitMQ.<br/>       When the limit is exhausted RabbitMQ will stop accepting new       network connections.!«!   memory-alarm!«!Û  <p>The <a target="_blank" href="http://www.rabbitmq.com/memory.html#memsup">memory       alarm</a> for this node has gone off. It will block       incoming network traffic until the memory usage drops below       the watermark.</p>      <p>Note that the pale line in this case indicates the high watermark       in relation to how much memory is used in total. </p>!«!   disk-free-alarm!«!İ  The <a target="_blank" href="http://www.rabbitmq.com/memory.html#diskfreesup">disk       free space alarm</a> for this node has gone off. It will block       incoming network traffic until the amount of free space exceeds       the limit.!«!'   message-get-requeue!«!Ã  <p>Clicking "Get Message(s)" will consume messages from the queue.       If requeue is set the message will be put back into the queue in place,       but "redelivered" will be set on the message.</p>       <p>If requeue is not set messages will be removed from the queue.</p>       <p>Furthermore, message payloads will be truncated to 50000 bytes.</p>!«!/   message-publish-headers!«!‰   Headers can have any name. Only long string headers can be set here.!«!5   message-publish-properties!«!ù  <p>You can set other message properties here (delivery mode and headers       are pulled out as the most common cases).</p>      <p>Invalid properties will be ignored. Valid properties are:</p>      <ul>      <li>content_type</li>      <li>content_encoding</li>      <li>priority</li>      <li>correlation_id</li>      <li>reply_to</li>      <li>expiration</li>      <li>message_id</li>      <li>timestamp</li>      <li>type</li>      <li>user_id</li>      <li>app_id</li>      <li>cluster_id</li>      </ul>!«!   string-base64!«!Õ  <p>AMQP message payloads can contain any binary content. They can      therefore be difficult to display in a browser. The options here      have the following meanings:</p>      <dl>        <dt>Auto string / base64</dt>        <dd>If the message payload can be interpreted as a string in UTF-8            encoding, do so. Otherwise return the payload encoded as            base64.</dd>        <dt>base64</dt>        <dd>Return the payload encoded as base64 unconditionally.</dd>      </dl>!«!   user-tags!«!e  Comma-separated list of tags to apply to the user. Currently        <a target="_blank" href="http://www.rabbitmq.com/management.html#permissions">supported        by the management plugin</a>:       <dl>         <dt>management</dt>         <dd>           User can access the management plugin         </dd>         <dt>policymaker</dt>         <dd>           User can access the management plugin and manage policies and           parameters for the vhosts they have access to.         </dd>         <dt>monitoring</dt>         <dd>           User can access the management plugin and see all connections and           channels as well as node-related information.         </dd>         <dt>administrator</dt>         <dd>           User can do everything monitoring can do, manage users,           vhosts and permissions, close other user's connections, and manage           policies and parameters for all vhosts.         </dd>       </dl>       <p>         Note that you can set any tag here; the links for the above four         tags are just for convenience.       </p>!«!   queued-messages!«!  <dl>                                  <dt>Ready</dt>        <dd>Number of messages that are available to be delivered now.</dd>        <dt>Unacknowledged</dt>        <dd>Number of messages for which the server is waiting for acknowledgement.</dd>        <dt>Total</dt>        <dd>The total of these two numbers.</dd>      </dl>!«!   message-rates!«!  Only rates for which some activity is taking place will be shown.      <dl>        <dt>Publish</dt>        <dd>Rate at which messages are entering the server.</dd>        <dt>Publisher confirm</dt>        <dd>Rate at which the server is confirming publishes.</dd>        <dt>Deliver (manual ack)</dt>        <dd>Rate at which messages are delivered to consumers that use manual acknowledgements.</dd>        <dt>Deliver (auto ack)</dt>        <dd>Rate at which messages are delivered to consumers that use automatic acknowledgements.</dd>        <dt>Consumer ack</dt>        <dd>Rate at which messages are being acknowledged by consumers.</dd>        <dt>Redelivered</dt>        <dd>Rate at which messages with the 'redelivered' flag set are being delivered. Note that these messages will <b>also</b> be counted in one of the delivery rates above.</dd>        <dt>Get (manual ack)</dt>        <dd>Rate at which messages requiring acknowledgement are being delivered in response to basic.get.</dd>        <dt>Get (auto ack)</dt>        <dd>Rate at which messages not requiring acknowledgement are being delivered in response to basic.get.</dd>        <dt>Return</dt>        <dd>Rate at which basic.return is sent to publishers for unroutable messages published with the 'mandatory' flag set.</dd>        <dt>Disk read</dt>        <dd>Rate at which queues read messages from disk.</dd>        <dt>Disk write</dt>        <dd>Rate at which queues write messages to disk.</dd>      </dl>      <p>        Note that the last two items are originate in queues rather than         channels; they may therefore be slightly out of sync with other         statistics.      </p>!«!9   disk-monitoring-no-watermark!«!{  There is no <a target="_blank" href="http://www.rabbitmq.com/memory.html#diskfreesup">disk space low watermark</a> set. RabbitMQ will not take any action to avoid running out of disk space.!«!   resource-counts!«!§   Shows total number of objects for all virtual hosts the current user has access to.!«!   memory-use!«!ı  <p>Note that the memory details shown here are only updated on request - they could be too expensive to calculate every few seconds on a busy server.</p><p><a target="_blank" href="http://www.rabbitmq.com/memory-use.html">Read more</a> on memory use.</p>!«!   binary-use!«!-  <p>Binary accounting is not exact; binaries are shared between processes (and thus the same binary might be counted in more than one section), and the VM does not allow us to track binaries that are not associated with processes (so some binary use might not appear at all).</p>!«!   policy-ha-mode!«!  One of <code>all</code> (mirror to all nodes in the cluster), <code>exactly</code> (mirror to a set number of nodes) or <code>nodes</code> (mirror to an explicit list of nodes). If you choose one of the latter two, you must also set <code>ha-params</code>.!«!!   policy-ha-params!«!o  Absent if <code>ha-mode</code> is <code>all</code>, a number    if <code>ha-mode</code> is <code>exactly</code>, or a list    of strings if <code>ha-mode</code> is <code>nodes</code>.!«!'   policy-ha-sync-mode!«!k   One of <code>manual</code> or <code>automatic</code>.!«!=   policy-federation-upstream-set!«!‹  A string; only if the federation plugin is enabled. Chooses the name of a set of upstreams to use with federation, or "all" to use all upstreams. Incompatible with <code>federation-upstream</code>.!«!5   policy-federation-upstream!«!E  A string; only if the federation plugin is enabled. Chooses a specific upstream set to use for federation. Incompatible with <code>federation-upstream-set</code>.!«!   handle-exe!«!-  In order to monitor the number of file descriptors in use on Windows, RabbitMQ needs the <a href="http://technet.microsoft.com/en-us/sysinternals/bb896655" target="_blank">handle.exe command line tool from Microsoft</a>. Download it and place it in the path (e.g. in C:Windows).!«!   filter-regex!«!I  Whether to enable regular expression matching. Both string literals     and regular expressions are matched in a case-insensitive manner.<br/></br/>     (<a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Regular_Expressions" target="_blank">Regular expression reference</a>)!«!   plugins!«!©   Note that only plugins which are both explicitly enabled and running are shown here.!«!   io-operations!«!'  Rate of I/O operations. Only operations performed by the message       persister are shown here (e.g. metadata changes in Mnesia or writes       to the log files are not shown).      <dl>        <dt>Read</dt>        <dd>Rate at which data is read from the disk.</dd>        <dt>Write</dt>        <dd>Rate at which data is written to the disk.</dd>        <dt>Seek</dt>        <dd>Rate at which the broker switches position while reading or          writing to disk.</dd>        <dt>Sync</dt>        <dd>Rate at which the broker invokes <code>fsync()</code> to ensure          data is flushed to disk.</dd>        <dt>Reopen</dt>        <dd>Rate at which the broker recycles file handles in order to support          more queues than it has file handles. If this operation is occurring          frequently you may get a performance boost from increasing the number          of file handles available.</dd>      </dl>!«!'   mnesia-transactions!«!Ÿ  Rate at which Mnesia transactions are initiated on this node (this node      will also take part in Mnesia transactions initiated on other nodes).      <dl>        <dt>RAM only</dt>        <dd>Rate at which RAM-only transactions take place (e.g. creation /             deletion of transient queues).</dd>        <dt>Disk</dt>        <dd>Rate at which disk (and RAM) transactions take place (.e.g             creation / deletion of durable queues).</dd>      </dl>!«!1   persister-operations-msg!«!«  Rate at which per-message persister operations take place on this node. See      <a href="http://www.rabbitmq.com/persistence-conf.html" target="_blank">here</a>      for more information on the persister.       <dl>        <dt>QI Journal</dt>        <dd>Rate at which message information (publishes, deliveries and             acknowledgements) is written to queue index journals.</dd>        <dt>Store Read</dt>        <dd>Rate at which messages are read from the message store.</dd>        <dt>Store Write</dt>        <dd>Rate at which messages are written to the message store.</dd>      </dl>!«!3   persister-operations-bulk!«!7  Rate at which whole-file persister operations take place on this node. See      <a href="http://www.rabbitmq.com/persistence-conf.html" target="_blank">here</a>      for more information on the persister.       <dl>        <dt>QI Read</dt>        <dd>Rate at which queue index segment files are read.</dd>        <dt>QI Write</dt>        <dd>Rate at which queue index segment files are written. </dd>      </dl>!«!   gc-operations!«!‰   Rate at which garbage collection operations take place on this node.!«!   gc-bytes!«!‘   Rate at which memory is reclaimed by the garbage collector on this node.!«!7   context-switches-operations!«!ƒ   Rate at which runtime context switching takes place on this node.!«!%   process-reductions!«!i   Rate at which reductions take place on this process.   !«!            š˜;ø        <         U  <   '   S  â   Ğ              <                                  	   
+                                                                      !   "   #   $   %   ‚    ‚   ‚   Ö   P   ›   QÖ   P   ›   QÖ   [   ›   Qš   K-   m	   ŞÖ   
+›   š   š   š   š   78Qã   QLMÏÿÿÿæ   QNš   K-   m   ŞÖ   
+›   š   š   š   š   78Qã   QLMÏÿÿÿæ   QNÖ   P   ›   QÖ   P   ›   QÖ   P   ›   QÖ   P	   ›   QÖ#   Z    ›#   QÖ   Z    ›   QÖ    =&   ›    QÖ   B›   QÖ   =&   ›   QÖ   B›   QÖ   >›   QÖ   [
+   ›   QÖ!   >›!   Q™ÿÿÿÓ¨¸°Ë¨¸°Ë¨"¸°Ë ˜¸°?6Ë˜ÿÿÿ÷Ë˜¸°×˜ÿÿÿãÕ ˜¸°?6Ë˜ÿÿÿ÷Ë˜¸°×˜ÿÿÿãÕ¨&¸°Ë¨3¸°Ë¨9¥˜¸°Ë¨€  ˆ¸°Ë¨€ ì         ¸°Ë             ¨€ I       ¸°Ë      ¸°Ë    ¸°§ ¸°Ë ¸°§         ¨€ l¸°§   ¸°Ë    #¸°§°    timer_interval#   current_highlight   ALL_ARGS#   nodes_interesting   user_tags!   current_template   current_filter/   current_filter_regex_on	   HELP   timer   current_sort/   last_successful_connect)   current_filter_regex   chart_data	   user!   outstanding_reqs7   rabbit_versions_interesting   app%   vhosts_interesting   IMPLICIT_ARGS   update_counter   exchange_types   NAVIGATION   rates_mode   k   user_monitor!   current_truncate   CHART_PERIODS   KNOWN_ARGS   current_reqs)   current_sort_reverse   COLUMNS   current_vhost9   last_page_out_of_range_error%   user_administrator%   dispatcher_modules'   is_user_policymaker   extension_count   CuĞ•ù¬      ^UÄW^UÄWAe®^UÆI   $    :http://localhost:15672/js/global.js strongly-framed 1 request-method GET response-head HTTP/1.1 200 OK
+content-length: 31958
+content-type: application/javascript
+etag: "1007081034"
+last-modified: Tue, 25 Feb 2020 23:42:19 GMT
+date: Wed, 26 Feb 2020 01:05:27 GMT
+server: Cowboy
+ original-response-headers server: Cowboy
+date: Tue, 25 Feb 2020 23:48:11 GMT
+content-length: 31958
+content-type: application/javascript
+etag: "1007081034"
+last-modified: Tue, 25 Feb 2020 23:42:19 GMT
+ ctid 2 uncompressed-len 0 necko:classified 1 alt-data 1;31958,javascript/moz-bytecode-20190718161435 alt-data-from-child 1  òp
