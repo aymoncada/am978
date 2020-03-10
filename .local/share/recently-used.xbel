@@ -346,12 +346,12 @@
       </metadata>
     </info>
   </bookmark>
-  <bookmark href="file:///home/alex/Downloads" added="2020-03-08T15:32:11Z" modified="2020-03-08T15:32:11Z" visited="2020-03-08T15:32:12Z">
+  <bookmark href="file:///home/alex/Downloads" added="2020-03-08T15:32:11Z" modified="2020-03-09T23:41:48Z" visited="2020-03-08T15:32:12Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <mime:mime-type type="inode/directory"/>
         <bookmark:applications>
-          <bookmark:application name="Archive Manager" exec="&apos;file-roller %u&apos;" modified="2020-03-08T15:32:11Z" count="1"/>
+          <bookmark:application name="Archive Manager" exec="&apos;file-roller %u&apos;" modified="2020-03-09T23:41:48Z" count="2"/>
         </bookmark:applications>
       </metadata>
     </info>
@@ -369,12 +369,52 @@
       </metadata>
     </info>
   </bookmark>
-  <bookmark href="file:///home/alex/Downloads/rabbitmqphp_example-websample.zip" added="2020-03-09T22:55:11Z" modified="2020-03-09T22:55:11Z" visited="2020-03-09T22:55:12Z">
+  <bookmark href="file:///home/alex/Downloads/rabbitmqphp_example-websample.zip" added="2020-03-09T22:55:11Z" modified="2020-03-09T23:41:33Z" visited="2020-03-09T22:55:12Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <mime:mime-type type="application/zip"/>
         <bookmark:applications>
           <bookmark:application name="Firefox" exec="&apos;firefox %u&apos;" modified="2020-03-09T22:55:11Z" count="1"/>
+          <bookmark:application name="File Roller" exec="&apos;file-roller&apos;" modified="2020-03-09T23:41:33Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/alex/Downloads/rabbitmqphp_example-websample/testRabbitMQServer.conf" added="2020-03-09T23:42:05Z" modified="2020-03-10T01:07:31Z" visited="2020-03-09T23:42:06Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/plain"/>
+        <bookmark:groups>
+          <bookmark:group>gedit</bookmark:group>
+        </bookmark:groups>
+        <bookmark:applications>
+          <bookmark:application name="gedit" exec="&apos;gedit %u&apos;" modified="2020-03-10T01:07:31Z" count="4"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/alex/Downloads/rabbitmqphp_example-websample/testRabbitMQServer.php" added="2020-03-09T23:42:56Z" modified="2020-03-10T01:17:19Z" visited="2020-03-09T23:42:56Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="application/x-php"/>
+        <bookmark:groups>
+          <bookmark:group>gedit</bookmark:group>
+        </bookmark:groups>
+        <bookmark:applications>
+          <bookmark:application name="gedit" exec="&apos;gedit %u&apos;" modified="2020-03-10T01:17:19Z" count="6"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/alex/Downloads/rabbitmqphp_example-websample/login.php.inc" added="2020-03-09T23:45:00Z" modified="2020-03-10T01:12:02Z" visited="2020-03-09T23:45:00Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="application/x-php"/>
+        <bookmark:groups>
+          <bookmark:group>gedit</bookmark:group>
+        </bookmark:groups>
+        <bookmark:applications>
+          <bookmark:application name="gedit" exec="&apos;gedit %u&apos;" modified="2020-03-10T01:12:02Z" count="10"/>
         </bookmark:applications>
       </metadata>
     </info>
